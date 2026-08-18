@@ -1,136 +1,186 @@
 
 
-# 1. 프로젝트 개요
 
-## 1.1 프로젝트명
 
-**JOB INSIGHT**
+# AGENTS.md
 
-## 1.2 프로젝트 목적
+# SEOUL SECURITY INFRASTRUCTURE INSIGHT
 
-IT 채용공고와 GitHub 개발 생태계 데이터를 수집·분석하여
-
-- 현재 IT 채용시장에서 어떤 기술이 많이 요구되는지
-- 직무별로 어떤 기술이 필요한지
-- 신입과 경력의 기술 요구사항이 어떻게 다른지
-- 채용시장과 GitHub의 기술 관심도가 어떻게 다른지
-- 취업 준비생이 어떤 기술을 우선적으로 학습해야 하는지
-
-를 데이터 기반으로 보여주는 서비스입니다.
+서울지역 보안 인프라 데이터를 분석하고 시각화하여
+서울의 지역별 보안 인프라 현황을 탐색할 수 있는
+Streamlit 기반 데이터 분석 프로젝트이다.
 
 ---
 
-# 2. 핵심 분석 질문
+# 1. PROJECT PURPOSE
 
-프로젝트는 아래 질문에 답하는 것을 목표로 합니다.
+이 프로젝트의 목적은 서울지역의 보안 인프라 데이터를 기반으로 다음 질문에
+답할 수 있는 데이터 분석 서비스를 만드는 것이다.
 
-### Q1.
-현재 IT 채용시장에서 가장 많이 요구되는 기술은 무엇인가?
+- 서울 어느 지역에 보안 인프라가 많이 분포하는가?
+- 자치구별 보안 인프라 분포에는 어떤 차이가 있는가?
+- CCTV, 방범시설, 안전시설 등의 분포는 어떻게 다른가?
+- 지역별 인구 또는 면적을 고려하면 어떤 지역의 인프라 밀도가 높은가?
+- 특정 지역의 보안 인프라 현황은 어떠한가?
+- 지도상에서 보안 인프라의 공간적 분포를 어떻게 확인할 수 있는가?
 
-### Q2.
-Backend / Frontend / Data / AI·ML / DevOps 직무별 요구 기술은 어떻게 다른가?
-
-### Q3.
-신입과 경력 채용의 기술 요구사항은 어떻게 다른가?
-
-### Q4.
-채용시장에서 요구되는 기술과 GitHub에서 나타나는 개발 생태계의 관심도는 어떻게 다른가?
-
-### Q5.
-특정 직무를 희망하는 사용자에게 어떤 기술을 우선적으로 학습하도록 추천할 수 있는가?
+최종적으로 Streamlit Dashboard를 통해 사용자가 서울의 보안 인프라 현황을
+쉽게 탐색할 수 있도록 한다.
 
 ---
 
-# 3. 개발 원칙
+# 2. CURRENT DEVELOPMENT PHASE
 
-## 원칙 1 — 완료 기준을 먼저 정의한다
+현재 프로젝트는 초기 개발 단계이다.
 
-개발 전에 해당 작업의 완료 조건을 확인합니다.
+현재 가장 중요한 목표는 다음과 같다.
 
-MVP 범위를 벗어나는 기능을 임의로 추가하지 않습니다.
+1. 프로젝트 실행 환경 구축
+2. Streamlit 공통 UI 구축
+3. Mock Data 구축
+4. 데이터 분석 함수 구축
+5. 차트 컴포넌트 구축
+6. 지도 시각화 구조 구축
+7. 페이지 구조 구축
+8. 실제 데이터 연결 준비
 
-### 요청 없이 추가하지 않는 기능
+현재 단계에서는 외부 API 및 실제 데이터 수집보다
+UI / 분석 / 시각화 구조를 먼저 완성한다.
+
+---
+
+# 3. IMPORTANT DEVELOPMENT PRIORITY
+
+개발 우선순위는 다음과 같다.
+
+1. UI / 공통 컴포넌트
+2. Mock Data
+3. 분석 로직
+4. 시각화
+5. Streamlit 페이지
+6. 실제 데이터 연결
+7. 외부 API
+8. 크롤링 / 자동 수집
+9. 고급 기능
+
+현재 단계에서 API나 크롤러를 먼저 구현하지 않는다.
+
+---
+
+# 4. MVP SCOPE
+
+## 반드시 구현
+
+- Streamlit 실행
+- 공통 Header
+- Sidebar Filter
+- KPI 카드
+- DataFrame Table
+- Bar Chart
+- Pie / Donut Chart
+- 지역별 비교
+- 지도 시각화 구조
+- Mock Data
+- 지역 필터
+- 시설 유형 필터
+- 자치구별 분석
+- 시설 유형별 분석
+- 기본 통계 분석
+- 분석 결과 페이지
+
+## 시간이 남으면
+
+- 지도 기반 상세 탐색
+- 지역별 시설 밀도
+- 인구 대비 시설 수
+- 면적 대비 시설 수
+- 여러 시설 유형 비교
+- 기간별 변화
+
+## 현재 구현하지 않는 기능
 
 - 로그인
 - 회원가입
 - 사용자 DB
 - 결제
 - 관리자 페이지
-- 복잡한 AI 추천
-- 채팅 기능
+- 채팅
+- 복잡한 AI
+- LLM 추천
+- 실시간 알림
+- 외부 API 자동 수집
+- Selenium 자동 수집
+- 대규모 크롤러
 - 불필요한 외부 서비스
 
-필요한 경우 반드시 먼저 요구사항을 확정합니다.
-
 ---
 
-## 원칙 2 — 조사 먼저, 구현 나중
+# 5. TECHNOLOGY STACK
 
-외부 라이브러리/API/크롤링을 구현하기 전에 관련 공식 문서를 확인합니다.
+## Language
 
-특히 다음을 확인합니다.
+Python 3.11+
 
-1. 공식 API 존재 여부
-2. 현재 사용 가능한 API 방식
-3. 인증 방법
-4. Rate Limit
-5. 이용약관
-6. robots.txt
-7. 자동화 허용 여부
-8. 현재 라이브러리 사용법
+## Package Manager
 
-가능하면 공식 API를 우선 사용합니다.
+uv
 
----
+## Environment
 
-## 원칙 3 — 버그는 원인 분석 후 수정한다
+프로젝트 루트의 `.venv`를 사용한다.
 
-에러 발생 시 무작정 코드를 수정하지 않습니다.
+실행은 가능한 한 다음 방식을 사용한다.
 
-다음 순서를 지킵니다.
-
-```text
-에러 확인
-  ↓
-발생 위치 확인
-  ↓
-재현
-  ↓
-원인 분석
-  ↓
-수정 방법 결정
-  ↓
-최소 범위 수정
-  ↓
-테스트
+```bash
+uv run streamlit run app.py
 
 
-땜빵식 수정이나 원인 없는 코드 변경을 금지합니다.
+Python 실행:
 
-4. 기술 스택
-영역	기술
-Language	Python 3.11+
-Package Manager	uv
-Data Collection	Requests
-HTML Parser	BeautifulSoup4
-Browser Automation	Selenium / Playwright
-API	GitHub REST API
-Data Processing	Pandas
-Numerical	NumPy
-Visualization	Plotly
-Dashboard	Streamlit
-Environment	python-dotenv
-Version Control	Git / GitHub
-AI Agent	Antigravity
-MCP	Context7 / GitHub / Playwright / Task Master / Chrome DevTools
-5. 프로젝트 디렉토리
+uv run python
+
+
+패키지 확인:
+
+uv pip list
+
+
+패키지 추가가 필요한 경우 먼저 기존 환경을 확인한다.
+
+uv pip list
+
+
+이미 설치된 라이브러리를 우선 사용한다.
+
+새로운 패키지를 추가하기 전에 반드시 사용자에게 확인한다.
+
+6. MAIN LIBRARIES
+
+현재 프로젝트에서 우선 사용하는 라이브러리:
+
+pandas
+numpy
+plotly
+streamlit
+matplotlib
+seaborn
+folium
+streamlit-folium
+python-dotenv
+
+필요 이상의 라이브러리를 추가하지 않는다.
+
+7. PROJECT STRUCTURE
+
+기본 구조:
+
 job-insight/
 │
 ├── app.py
 ├── AGENTS.md
 ├── README.md
 ├── pyproject.toml
-├── requirements.txt
+├── uv.lock
 ├── .gitignore
 ├── .env
 ├── .env.example
@@ -139,126 +189,52 @@ job-insight/
 │   ├── __init__.py
 │   └── settings.py
 │
-├── crawler/
-│   ├── __init__.py
-│   ├── job_crawler.py
-│   └── github_api.py
-│
 ├── data/
 │   ├── raw/
-│   │   ├── jobs_raw.csv
-│   │   └── github_raw.csv
-│   │
 │   └── processed/
-│       ├── jobs_clean.csv
-│       └── tech_analysis.csv
 │
 ├── analysis/
 │   ├── __init__.py
 │   ├── preprocessing.py
-│   ├── eda.py
-│   ├── tech_analysis.py
-│   └── recommendation.py
+│   ├── statistics.py
+│   └── regional_analysis.py
 │
 ├── visualization/
 │   ├── __init__.py
-│   └── charts.py
+│   ├── charts.py
+│   └── maps.py
 │
-├── pages/
-│   ├── 1_📊_Job_Market.py
-│   ├── 2_💻_Tech_Trend.py
-│   └── 3_🎯_Job_Recommendation.py
+├── components/
+│   ├── __init__.py
+│   ├── header.py
+│   ├── sidebar.py
+│   ├── metrics.py
+│   ├── tables.py
+│   └── cards.py
 │
 ├── utils/
 │   ├── __init__.py
-│   └── common.py
+│   ├── common.py
+│   └── mock_data.py
+│
+├── pages/
+│   ├── 1_📊_Overview.py
+│   ├── 2_🗺️_Regional_Analysis.py
+│   ├── 3_🔐_Security_Infra.py
+│   └── 4_📈_Statistics.py
 │
 └── notebooks/
-    ├── 01_EDA.ipynb
-    └── 02_Tech_Analysis.ipynb
+    └── 01_EDA.ipynb
 
-6. 디렉토리 역할
-app.py
+8. ARCHITECTURE
 
-Streamlit 서비스의 메인 진입점입니다.
+데이터 흐름은 다음 구조를 유지한다.
 
-실행:
-
-streamlit run app.py
-
-crawler/
-
-외부 데이터 수집만 담당합니다.
-
-job_crawler.py
-→ 채용공고 수집
-
-github_api.py
-→ GitHub API 데이터 수집
-
-
-Crawler에서 분석 로직을 수행하지 않습니다.
-
-data/raw/
-
-외부에서 수집한 원본 데이터를 저장합니다.
-
-jobs_raw.csv
-github_raw.csv
-
-
-Raw 데이터는 가능한 한 그대로 보존합니다.
-
-data/processed/
-
-정제된 데이터를 저장합니다.
-
-jobs_clean.csv
-tech_analysis.csv
-
-analysis/
-
-분석 로직을 담당합니다.
-
-preprocessing.py
-→ 데이터 정제
-
-eda.py
-→ 탐색적 데이터 분석
-
-tech_analysis.py
-→ 기술 스택 분석
-
-recommendation.py
-→ 기술 추천
-
-visualization/
-
-Plotly 차트를 생성합니다.
-
-분석 로직과 UI 코드를 분리합니다.
-
-pages/
-
-Streamlit 멀티페이지입니다.
-
-Job Market
-Tech Trend
-Job Recommendation
-
-7. 데이터 흐름
-
-프로젝트의 기본 데이터 흐름은 절대 임의로 변경하지 않습니다.
-
-채용 사이트
+Data Source
     ↓
-Crawler
-    ↓
-data/raw/jobs_raw.csv
+Raw Data
     ↓
 Preprocessing
-    ↓
-data/processed/jobs_clean.csv
     ↓
 Analysis
     ↓
@@ -267,1003 +243,1242 @@ Visualization
 Streamlit
 
 
-GitHub 데이터:
+현재 실제 데이터가 없을 경우:
 
-GitHub API
+Mock Data
     ↓
-data/raw/github_raw.csv
-    ↓
-Analysis
-    ↓
-채용시장 데이터와 비교
-
-8. 채용 데이터 표준
-
-팀 전체가 동일한 데이터 스키마를 사용합니다.
-
-필수 컬럼
-job_id
-company
-title
-job_category
-experience
-employment_type
-location
-description
-required_skills
-preferred_skills
-posted_date
-deadline
-url
-source
-
-
-예:
-
-job_id: 001
-company: A회사
-title: 백엔드 개발자
-job_category: Backend
-experience: 신입
-location: 서울
-
-9. GitHub 데이터 표준
-
-기본 컬럼:
-
-language
-repository
-stars
-forks
-open_issues
-updated_at
-
-
-필요한 경우 분석 목적에 맞는 컬럼을 추가할 수 있습니다.
-
-10. 직무 분류
-
-MVP에서는 아래 5개 직무를 사용합니다.
-
-JOB_CATEGORIES = [
-    "Backend",
-    "Frontend",
-    "Data",
-    "AI/ML",
-    "DevOps",
-]
-
-
-새로운 직무 추가 시 기존 필터와 분석 코드에 미치는 영향을 확인합니다.
-
-11. 기술 스택
-
-초기 분석 대상:
-
-TECH_STACK = [
-    "Python",
-    "Java",
-    "JavaScript",
-    "TypeScript",
-    "SQL",
-    "C++",
-    "Go",
-    "Rust",
-
-    "Spring",
-    "Django",
-    "FastAPI",
-    "React",
-    "Vue",
-    "Next.js",
-
-    "AWS",
-    "Azure",
-    "GCP",
-
-    "Docker",
-    "Kubernetes",
-
-    "MySQL",
-    "PostgreSQL",
-    "Redis",
-
-    "Git",
-    "Linux",
-]
-
-12. 기술명 정규화
-
-동일 기술의 표현 차이를 하나의 기술명으로 통일합니다.
-
-TECH_ALIASES = {
-    "Python": [
-        "python",
-        "python3",
-    ],
-
-    "JavaScript": [
-        "javascript",
-        "js",
-    ],
-
-    "TypeScript": [
-        "typescript",
-        "ts",
-    ],
-
-    "PostgreSQL": [
-        "postgresql",
-        "postgres",
-    ],
-}
-
-
-예:
-
-Python
-python
-Python3
-
-
-→
-
-Python
-
-
-으로 통일합니다.
-
-13. 채용공고 수집 원칙
-정적 페이지
-Requests
-    ↓
-HTML
-    ↓
-BeautifulSoup
-    ↓
-데이터 추출
-
-동적 페이지
-Selenium / Playwright
-    ↓
-페이지 로딩
-    ↓
-HTML
-    ↓
-BeautifulSoup
-    ↓
-데이터 추출
-
-공식 API
-
-가능한 경우:
-
-API
- ↓
-JSON
- ↓
-DataFrame
-
-
-방식을 우선합니다.
-
-14. 크롤링 안전 규칙
-
-크롤링 전 반드시 확인합니다.
-
-이용약관
-robots.txt
-API 정책
-자동화 허용 여부
-Rate Limit
-개인정보 포함 여부
-
-
-과도한 요청을 보내지 않습니다.
-
-HTTP 요청에는 timeout을 사용합니다.
-
-requests.get(
-    url,
-    timeout=10,
-)
-
-
-브라우저 자동화 후에는 반드시 브라우저를 종료합니다.
-
-15. Raw 데이터 보존 원칙
-
-Raw 데이터는 분석 전에 수정하지 않습니다.
-
-잘못된 구조:
-
-Crawler
- ↓
-바로 데이터 수정
- ↓
-분석
-
-
-올바른 구조:
-
-Crawler
- ↓
-Raw
- ↓
 Preprocessing
- ↓
-Processed
- ↓
+    ↓
 Analysis
-
-
-Raw 데이터는 문제가 발생했을 때 재처리할 수 있는 원본으로 사용합니다.
-
-16. 전처리
-
-analysis/preprocessing.py에서 담당합니다.
-
-기본 처리:
-
-컬럼명 정규화
-중복 제거
-결측치 처리
-문자열 정리
-날짜 정규화
-기술명 정규화
-
-
-예:
-
-df.columns = (
-    df.columns
-    .str.strip()
-    .str.lower()
-    .str.replace(" ", "_")
-)
-
-17. 기술 추출
-
-채용공고의 description을 기반으로 기술을 추출합니다.
-
-예:
-
-Python과 FastAPI를 사용하며
-AWS 및 Docker 경험자를 우대합니다.
-
-
-↓
-
-Python
-FastAPI
-AWS
-Docker
-
-
-기술 추출은 분석 단계에서 수행합니다.
-
-Crawler는 원문 description을 최대한 보존합니다.
-
-18. 핵심 분석
-분석 1 — 전체 기술 수요
-
-예:
-
-Python      72%
-SQL         68%
-Java        61%
-AWS         59%
-Docker      51%
-
-
-실제 수치는 수집한 데이터로 계산합니다.
-
-분석 2 — 직무별 기술 수요
-
-예:
-
-Backend
-Python
-SQL
-AWS
-Docker
-
-Frontend
-JavaScript
-TypeScript
-React
-Next.js
-
-분석 3 — 신입 vs 경력
-
-예:
-
-             신입      경력
-
-Python       72%      81%
-SQL          68%      76%
-AWS          45%      69%
-Docker       31%      57%
-
-
-실제 수치는 데이터로 계산합니다.
-
-분석 4 — 채용시장 vs GitHub
-
-두 데이터는 모집단과 수집 방법이 다릅니다.
-
-따라서:
-
-채용시장 비율 = 채용공고에서의 기술 등장 비율
-
-GitHub 지표 = GitHub 데이터에서 측정한 기술 활동/관심 지표
-
-
-로 정의합니다.
-
-두 값을 동일한 의미의 비율로 표현하지 않습니다.
-
-19. 시각화
-
-핵심 그래프는 5개 이내로 제한합니다.
-
-1. 전체 기술 순위
-
-Bar Chart
-
-2. 직무별 기술 비교
-
-Grouped Bar Chart
-
-3. 신입 vs 경력
-
-Grouped Bar Chart
-
-4. 채용시장 vs GitHub
-
-Comparison Chart
-
-5. 기간별 기술 추세
-
-Line Chart
-
-데이터가 충분할 경우에만 구현합니다.
-
-20. Streamlit 화면
-Main
-💼 JOB INSIGHT
-
-2026 IT 채용시장 기술 트렌드 분석
-
-전체 공고
-기업 수
-직무 수
-기술 수
-
-Page 1 — Job Market
-
-기능:
-
-직무 필터
-경력 필터
-지역 필터
-전체 공고 수
-기업 수
-직무별 채용 비중
-Page 2 — Tech Trend
-
-기능:
-
-직무 선택
-기술 수요 순위
-직무별 기술 비교
-신입/경력 비교
-GitHub 비교
-Page 3 — Recommendation
-
-기능:
-
-희망 직무
-+
-현재 보유 기술
-↓
-부족 기술 분석
-↓
-우선 학습 기술 추천
-
-21. 추천 시스템
-
-MVP에서는 규칙 기반으로 구현합니다.
-
-예:
-
-backend_skills = {
-    "Python": 0.72,
-    "SQL": 0.68,
-    "AWS": 0.59,
-    "Docker": 0.51,
-    "FastAPI": 0.34,
-}
-
-
-사용자가:
-
-Python
-
-
-을 보유한 경우:
-
-추천 학습 기술
-
-1. SQL
-2. AWS
-3. Docker
-4. FastAPI
-
-
-추천 순서는 해당 직무에서의 기술 수요를 기준으로 합니다.
-
-22. LLM 사용 원칙
-
-LLM은 MVP 필수 기능이 아닙니다.
-
-우선 다음 기능을 완성합니다.
-
-수집
- ↓
-전처리
- ↓
-분석
- ↓
-추천
- ↓
+    ↓
+Visualization
+    ↓
 Streamlit
 
 
-이후 시간이 남을 경우 LLM을 추가합니다.
+실제 데이터 연결 후에도 가능한 한 동일한 데이터 인터페이스를 유지한다.
 
-가능한 확장:
+9. MOCK DATA FIRST
 
-채용공고
- ↓
-LLM
- ↓
-업무 요약
- ↓
-필요 역량 분석
- ↓
-학습 로드맵
+현재 개발 단계에서는 Mock Data를 적극적으로 사용한다.
 
-23. 환경변수
+Mock Data는 실제 데이터와 가능한 한 동일한 컬럼 구조를 사용해야 한다.
 
-API Key는 절대 코드에 직접 작성하지 않습니다.
+예:
+
+district
+facility_type
+facility_name
+latitude
+longitude
+address
+installed_year
+count
+
+
+예시:
+
+강남구
+CCTV
+방범 CCTV
+37.4979
+127.0276
+서울특별시 강남구 ...
+2024
+1
+
+
+Mock Data는 실제 데이터를 흉내 내기 위한 것이며
+실제 통계값으로 오해될 수 있는 문구를 사용하지 않는다.
+
+Dashboard에 Mock Data를 사용하는 경우 다음과 같이 표시할 수 있다.
+
+DEMO DATA
+현재 화면은 서비스 UI 및 분석 로직 검증을 위한 Mock Data입니다.
+
+10. DATA SCHEMA
+
+기본 데이터 스키마는 다음을 사용한다.
+
+Security Infrastructure
+facility_id
+district
+facility_type
+facility_name
+latitude
+longitude
+address
+installed_year
+count
+
+
+필요한 경우 다음 컬럼을 추가할 수 있다.
+
+dong
+management_org
+status
+source
+
+
+단, 기존 분석 코드에 영향을 주는 컬럼 변경은
+임의로 수행하지 않는다.
+
+11. FACILITY TYPES
+
+MVP에서 사용할 기본 시설 유형:
+
+FACILITY_TYPES = [
+    "CCTV",
+    "보안등",
+    "비상벨",
+    "방범시설",
+    "안전시설",
+]
+
+
+실제 데이터의 시설 분류가 달라질 경우
+분석 코드에서 직접 문자열을 하드코딩하지 말고
+설정 파일 또는 상수로 관리한다.
+
+12. SEOUL DISTRICTS
+
+서울 25개 자치구를 기본 분석 단위로 사용한다.
+
+SEOUL_DISTRICTS = [
+    "강남구",
+    "강동구",
+    "강북구",
+    "강서구",
+    "관악구",
+    "광진구",
+    "구로구",
+    "금천구",
+    "노원구",
+    "도봉구",
+    "동대문구",
+    "동작구",
+    "마포구",
+    "서대문구",
+    "서초구",
+    "성동구",
+    "성북구",
+    "송파구",
+    "양천구",
+    "영등포구",
+    "용산구",
+    "은평구",
+    "종로구",
+    "중구",
+    "중랑구",
+]
+
+13. ANALYSIS RULES
+
+분석 로직과 UI 코드를 분리한다.
+
+잘못된 구조:
+
+# Streamlit page
+
+df.groupby(...)
+st.bar_chart(...)
+
+
+가능하면 다음과 같이 분리한다.
+
+analysis/
+    ↓
+DataFrame / 결과 객체
+    ↓
+visualization/
+    ↓
+Plotly Figure
+    ↓
+Streamlit page
+
+
+분석 함수는 Streamlit UI를 직접 호출하지 않는다.
+
+14. CORE ANALYSIS
+
+MVP 핵심 분석은 다음과 같다.
+
+14.1 지역별 시설 수
+강남구     1,240
+송파구     1,180
+관악구     1,050
+...
+
+14.2 시설 유형별 수
+CCTV       5,200
+보안등     3,800
+비상벨     1,200
+...
+
+14.3 자치구 × 시설 유형
+
+Cross Tab:
+
+        CCTV  보안등  비상벨
+강남구    500    300     80
+송파구    480    290     70
+관악구    520    350     90
+
+14.4 지역별 시설 밀도
+
+가능한 경우:
+
+시설 수 / 면적
+
+
+또는
+
+시설 수 / 인구
+
+
+를 계산한다.
+
+단, 인구나 면적 데이터가 없는 경우
+임의의 수치를 만들어 사용하지 않는다.
+
+15. ANALYSIS OUTPUT CONTRACT
+
+분석 함수는 가능한 한 다음 형태로 결과를 반환한다.
+
+pd.DataFrame
+
+
+예:
+
+def get_facility_count_by_district(df):
+    return (
+        df.groupby("district")
+        .size()
+        .reset_index(name="facility_count")
+    )
+
+
+UI에서 사용할 데이터를 분석 함수가 반환하도록 한다.
+
+분석 함수 내부에서:
+
+st.write()
+st.metric()
+st.plotly_chart()
+
+
+등을 호출하지 않는다.
+
+16. VISUALIZATION RULES
+
+시각화 코드는:
+
+visualization/
+
+
+에 둔다.
+
+예:
+
+def create_district_bar_chart(df):
+    ...
+    return fig
+
+
+Streamlit page에서는:
+
+fig = create_district_bar_chart(df)
+st.plotly_chart(fig, use_container_width=True)
+
+
+형태를 사용한다.
+
+17. CORE CHARTS
+
+MVP에서 다음 차트를 우선 구현한다.
+
+Chart 1
+
+자치구별 보안 인프라 수
+
+→ Horizontal Bar Chart
+
+Chart 2
+
+시설 유형별 분포
+
+→ Donut Chart
+
+Chart 3
+
+자치구 × 시설 유형
+
+→ Heatmap
+
+Chart 4
+
+지역별 시설 수 비교
+
+→ Bar Chart
+
+Chart 5
+
+연도별 설치 추이
+
+→ Line Chart
+
+단, 실제 데이터에 날짜/연도 정보가 충분하지 않으면
+연도별 추이를 구현하지 않는다.
+
+18. MAP VISUALIZATION
+
+지도는 MVP의 핵심 시각화 요소 중 하나이다.
+
+가능한 경우:
+
+서울 지도
+    ↓
+시설 위치 표시
+    ↓
+시설 유형별 색상
+    ↓
+필터 적용
+
+
+지도 구현 시 좌표가 없는 데이터는 지도에 표시하지 않는다.
+
+잘못된 좌표를 임의로 생성하지 않는다.
+
+19. STREAMLIT PAGE STRUCTURE
+Main
+
+서비스 소개 및 핵심 KPI.
+
+SEOUL SECURITY INFRASTRUCTURE INSIGHT
+
+서울지역 보안 인프라 데이터 분석
+
+[전체 시설]
+[자치구 수]
+[시설 유형]
+[데이터 수]
+
+Page 1 — Overview
+
+전체 서울지역 현황.
+
+기능:
+
+전체 시설 수
+자치구별 시설 수
+시설 유형별 분포
+주요 차트
+Page 2 — Regional Analysis
+
+지역 중심 분석.
+
+Sidebar:
+
+자치구
+[전체]
+
+시설 유형
+[전체]
+
+
+출력:
+
+선택 지역 KPI
+지역별 비교
+시설 유형별 비교
+지도
+Page 3 — Security Infrastructure
+
+시설 중심 분석.
+
+예:
+
+시설 유형
+[CCTV ▼]
+
+
+출력:
+
+시설 수
+자치구별 분포
+지도
+설치 연도
+상세 데이터
+Page 4 — Statistics
+
+분석 결과를 표 중심으로 제공한다.
+
+예:
+
+자치구 | 전체시설 | CCTV | 보안등 | 비상벨
+-------------------------------------------
+강남구 | ...
+송파구 | ...
+관악구 | ...
+
+20. COMMON UI COMPONENTS
+
+공통 UI는 여러 페이지에서 재사용할 수 있도록 만든다.
+
+필수 컴포넌트:
+
+Header
+Sidebar
+KPI Cards
+Section Title
+Info Card
+Data Table
+Empty State
+Loading State
+
+
+예:
+
+render_header()
+
+render_kpi_cards()
+
+render_section_title("자치구별 시설 현황")
+
+render_result_table(df)
+
+
+각 페이지에서 동일한 UI 코드를 복사하지 않는다.
+
+21. SIDEBAR RULE
+
+Sidebar 필터는 가능한 한 공통 컴포넌트로 만든다.
+
+예:
+
+지역
+[전체 ▼]
+
+시설 유형
+[전체 ▼]
+
+설치년도
+[전체 ▼]
+
+
+필터 결과는 DataFrame으로 반환한다.
+
+filtered_df = render_sidebar_filters(df)
+
+22. KPI RULE
+
+KPI는 다음 원칙을 따른다.
+
+전체 시설
+1,234
+
+자치구
+25
+
+시설 유형
+5
+
+평균 시설 수
+49.3
+
+
+KPI 숫자는 분석 결과에서 계산한다.
+
+임의의 숫자를 하드코딩하지 않는다.
+
+Mock Data 단계에서는 Mock Data임을 명시한다.
+
+23. TABLE RULE
+
+표는 분석 결과를 확인할 수 있도록 제공한다.
+
+가능하면:
+
+st.dataframe(
+    df,
+    use_container_width=True,
+    hide_index=True
+)
+
+
+를 사용한다.
+
+불필요하게 모든 원본 데이터를 화면에 출력하지 않는다.
+
+필요한 컬럼만 선택한다.
+
+24. DATA VALIDATION
+
+데이터를 사용하기 전에 최소한 다음을 확인한다.
+
+필수 컬럼 존재
+결측값
+중복값
+좌표 이상값
+시설 유형
+자치구
+
+
+예:
+
+required_columns = [
+    "facility_id",
+    "district",
+    "facility_type",
+    "latitude",
+    "longitude",
+]
+
+
+필수 컬럼이 없으면 조용히 실패하지 말고
+명확한 오류 메시지를 제공한다.
+
+25. MISSING DATA
+
+결측값을 무조건 0으로 변경하지 않는다.
+
+예:
+
+인구 데이터 없음
+
+
+을:
+
+인구 = 0
+
+
+으로 처리하면 안 된다.
+
+분석 의미가 달라질 수 있다.
+
+가능한 경우:
+
+Unknown
+N/A
+결측
+
+
+등으로 구분한다.
+
+26. API / EXTERNAL DATA RULE
+
+현재 단계에서는 외부 API를 구현하지 않는다.
+
+다음 기능은 후순위다.
+
+공공데이터 API
+서울시 API
+외부 REST API
+웹 크롤링
+Requests
+BeautifulSoup
+Selenium
+Playwright
+
+
+현재 UI와 분석 구조는 Mock Data로 개발한다.
+
+실제 API가 연결되더라도
+분석 및 UI 코드를 최대한 변경하지 않는 것을 목표로 한다.
+
+27. FUTURE DATA SOURCE
+
+향후 실제 데이터 연결 시:
+
+공공데이터
+    ↓
+API / CSV
+    ↓
+Raw Data
+    ↓
+Preprocessing
+    ↓
+Analysis
+    ↓
+Dashboard
+
+
+구조를 사용한다.
+
+API 구현은 별도의 모듈로 분리한다.
+
+예:
+
+data_sources/
+├── public_api.py
+├── csv_loader.py
+└── crawler.py
+
+
+현재는 생성하지 않아도 된다.
+
+28. NO FAKE DATA RULE
+
+실제 데이터가 없는 경우 Mock Data를 사용할 수 있다.
+
+하지만 Mock Data를 실제 통계처럼 표현하지 않는다.
+
+금지:
+
+서울 강남구의 실제 CCTV 수는 1,234개이다.
+
+
+허용:
+
+※ 현재 화면은 개발용 Mock Data입니다.
+
+29. SECURITY
+
+다음 정보는 절대 코드에 작성하지 않는다.
+
+API Key
+Token
+Password
+Secret
+개인 식별 정보
+
+환경 변수:
 
 .env
 
-GITHUB_API_KEY=
 
+사용.
 
-.env.example
-
-GITHUB_API_KEY=
-
-
-Python:
+예:
 
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-GITHUB_API_KEY = os.getenv("GITHUB_API_KEY")
+API_KEY = os.getenv("API_KEY")
 
 
-API Key를 다음에 출력하지 않습니다.
+.env는 Git에 올리지 않는다.
 
-console
-log
-Streamlit
-Git
-PR
+30. .GITIGNORE
 
-24. Git Ignore
+최소 다음을 포함한다.
 
-.gitignore에는 최소 다음을 포함합니다.
-
-# Environment
 .env
 .env.*
 !.env.example
 
-# Python
 .venv/
-venv/
 __pycache__/
-*.py[cod]
+*.pyc
+
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
-*.egg-info/
 
-# Node
-node_modules/
+.ipynb_checkpoints/
 
-# Build
-dist/
-build/
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OS
 .DS_Store
 Thumbs.db
 
-# IDE
-.idea/
+*.log
 
-25. Git 협업
-Branch 구조
-main
-  │
-  └── develop
-       │
-       ├── feature/job-crawler
-       ├── feature/job-crawler-selenium
-       ├── feature/github-api
-       ├── feature/preprocessing
-       ├── feature/analysis
-       ├── feature/streamlit
-       └── feature/recommendation
+31. CODING STYLE
 
-작업 시작
-git checkout develop
-git pull origin develop
-git checkout -b feature/기능명
+Python:
 
-Commit 규칙
-
-Conventional Commit을 사용합니다.
-
-feat: 채용공고 크롤러 구현
-feat: GitHub API 수집 추가
-fix: 기술 alias 추출 오류 수정
-refactor: 전처리 함수 분리
-docs: README 업데이트
-chore: requirements 업데이트
-
-Push
-git add .
-git commit -m "feat: 채용공고 크롤러 구현"
-git push origin feature/job-crawler
-
-
-이후 Pull Request를 생성합니다.
-
-가능하면 main에 직접 push하지 않습니다.
-
-26. 팀원 작업 분배
-
-6~7명 기준:
-
-담당	영역
-A	채용 데이터 수집 1
-B	채용 데이터 수집 2 / Selenium
-C	GitHub API
-D	전처리 / 기술 추출
-E	통계 / 데이터 분석
-F	시각화 / Streamlit
-G	통합 / 추천 / 발표
-
-단, 각 담당자는 자신의 코드가 다른 모듈과 연결될 수 있도록 공통 데이터 규격을 반드시 준수합니다.
-
-27. MCP 사용 규칙
-
-현재 프로젝트에서 사용하는 MCP:
-
-Context7
-GitHub
-Playwright
-Task Master AI
-Chrome DevTools
-
-Context7
-
-라이브러리 사용법 및 최신 공식 문서 확인에 사용합니다.
-
-라이브러리 API를 추측해서 구현하지 않습니다.
-
-GitHub MCP
-
-다음 작업에 사용합니다.
-
-Repository 확인
-파일 조회
-Branch 확인
-Issue 확인
-Pull Request 확인
-GitHub 작업
-Playwright MCP
-
-웹 페이지 및 Streamlit UI 테스트에 사용합니다.
-
-검증 대상:
-
-페이지 이동
-필터
-버튼
-입력
-차트 출력
-추천 결과
-Chrome DevTools MCP
-
-브라우저 디버깅 및 렌더링 문제 분석에 사용합니다.
-
-Task Master AI
-
-개발 작업을 Task / Subtask 단위로 관리합니다.
+PEP 8 준수
+함수명은 snake_case
+클래스명은 PascalCase
+상수는 UPPER_SNAKE_CASE
+의미가 명확한 변수명 사용
 
 예:
 
-Task
-├── 채용 크롤러
-│   ├── URL 수집
-│   ├── HTML 분석
-│   └── CSV 저장
-│
-├── 전처리
-│   ├── 결측치
-│   ├── 중복
-│   └── 기술명 정규화
-│
-└── Streamlit
-    ├── Dashboard
-    ├── Tech Trend
-    └── Recommendation
-
-28. AI Agent 작업 절차
-
-AI Agent는 코드를 수정하기 전에 다음 순서를 따릅니다.
-
-1. 사용자 요구사항 확인
-        ↓
-2. AGENTS.md 확인
-        ↓
-3. 현재 프로젝트 구조 확인
-        ↓
-4. 관련 파일 확인
-        ↓
-5. Context7 등 공식 문서 조사
-        ↓
-6. 영향 범위 분석
-        ↓
-7. 최소 범위 구현
-        ↓
-8. 테스트
-        ↓
-9. 변경 사항 요약
+district_facility_count
 
 
-기존 파일을 확인하지 않고 새로운 파일을 임의로 생성하지 않습니다.
+좋음.
 
-29. 파괴적 작업
+x
 
-다음 작업은 명시적인 승인 없이 수행하지 않습니다.
 
-기존 코드 대규모 삭제
-디렉토리 구조 대규모 변경
-데이터 전체 삭제
-Git history 변경
+가능하면 피한다.
+
+32. FUNCTION RULE
+
+하나의 함수가 너무 많은 역할을 수행하지 않도록 한다.
+
+나쁜 예:
+
+def process_everything():
+    # 데이터 로딩
+    # 전처리
+    # 분석
+    # 차트
+    # Streamlit 출력
+
+
+좋은 예:
+
+load_data()
+preprocess_data()
+analyze_data()
+create_chart()
+render_page()
+
+33. IMPORT RULE
+
+가능하면 모듈 역할에 맞는 import 구조를 유지한다.
+
+예:
+
+from analysis.regional_analysis import (
+    get_district_facility_count,
+)
+
+from visualization.charts import (
+    create_district_bar_chart,
+)
+
+from components.metrics import (
+    render_kpi_cards,
+)
+
+
+분석 모듈이 Streamlit UI 모듈을 import하지 않도록 한다.
+
+34. STREAMLIT CACHE
+
+비용이 큰 데이터 로딩 또는 계산에는 Streamlit cache를 사용할 수 있다.
+
+예:
+
+@st.cache_data
+def load_data():
+    ...
+
+
+단순한 계산까지 무조건 cache 처리하지 않는다.
+
+35. ERROR HANDLING
+
+에러를 무조건 숨기지 않는다.
+
+잘못된 예:
+
+try:
+    ...
+except:
+    pass
+
+
+금지.
+
+가능하면 구체적인 예외를 처리한다.
+
+try:
+    ...
+except FileNotFoundError:
+    ...
+
+
+사용자가 이해할 수 있는 오류 메시지를 제공한다.
+
+36. TESTING
+
+코드를 수정한 후 최소한 다음을 확인한다.
+
+Python Import
+uv run python -c "import app"
+
+Streamlit
+uv run streamlit run app.py
+
+분석 모듈
+uv run python -c "from analysis.regional_analysis import *; print('OK')"
+
+Mock Data
+
+Mock Data로 페이지가 정상 실행되는지 확인한다.
+
+37. STREAMLIT TEST
+
+페이지에서 다음을 확인한다.
+
+[ ] 앱 실행
+[ ] 페이지 이동
+[ ] Sidebar 표시
+[ ] 지역 필터
+[ ] 시설 유형 필터
+[ ] KPI 변경
+[ ] Chart 출력
+[ ] Table 출력
+[ ] 지도 출력
+[ ] 데이터 없음 상태
+
+38. UI TEST
+
+가능하면 Playwright를 이용해 다음을 확인한다.
+
+페이지 접속
+↓
+Sidebar 확인
+↓
+필터 선택
+↓
+화면 변경 확인
+↓
+Chart 확인
+↓
+Table 확인
+
+
+UI 테스트를 하지 않은 경우
+"UI 테스트 완료"라고 보고하지 않는다.
+
+39. DEVELOPMENT WORKFLOW
+
+Agent는 코드를 수정하기 전에 반드시:
+
+1. AGENTS.md 확인
+2. 현재 디렉토리 확인
+3. 관련 파일 확인
+4. 기존 코드 확인
+5. 변경 범위 결정
+6. 구현
+7. 테스트
+8. 결과 보고
+
+
+순서를 따른다.
+
+40. BEFORE CODING
+
+사용자가 특정 기능을 요청하면
+먼저 다음을 확인한다.
+
+현재 파일 존재 여부
+현재 함수 존재 여부
+현재 import 구조
+현재 데이터 구조
+현재 Streamlit 구조
+
+
+이미 구현된 기능을 새로 만들지 않는다.
+
+41. MINIMAL CHANGE RULE
+
+요청받은 기능에 필요한 최소 범위만 수정한다.
+
+예:
+
+사용자가:
+
+Sidebar 필터 수정
+
+
+을 요청한 경우
+
+다음은 임의로 변경하지 않는다.
+
+데이터 구조
+API
+크롤러
+분석 알고리즘
+다른 페이지
+Git 설정
+42. API / CRAWLER PROTECTION
+
+다음 디렉토리는 현재 단계에서 보호한다.
+
+crawler/
+data_sources/
+
+
+사용자가 명시적으로 요청하지 않는 이상
+수정하지 않는다.
+
+API 연결이 필요한 경우에도 먼저 사용자에게 확인한다.
+
+43. DEPENDENCY RULE
+
+새로운 패키지가 필요하다고 판단되면
+바로 설치하지 않는다.
+
+먼저:
+
+uv pip list
+
+
+를 확인한다.
+
+기존 라이브러리로 해결 가능한지 판단한다.
+
+새 패키지가 반드시 필요하다면:
+
+왜 필요한지
+어떤 대체 방법이 있는지
+어떤 패키지를 추가하는지
+
+
+를 먼저 사용자에게 설명한다.
+
+44. DATA STRUCTURE PROTECTION
+
+다음 데이터 계약을 임의로 변경하지 않는다.
+
+facility_id
+district
+facility_type
+facility_name
+latitude
+longitude
+address
+installed_year
+count
+
+
+컬럼을 변경해야 한다면
+관련된 분석 / 시각화 / 페이지 전체 영향을 확인한다.
+
+45. NO UNREQUESTED REFACTORING
+
+사용자가 요청하지 않은 대규모 리팩터링을 하지 않는다.
+
+특히 다음 작업을 임의로 하지 않는다.
+
+디렉토리 구조 변경
+파일 대량 이동
+함수 전체 재작성
+라이브러리 변경
+패키지 교체
+데이터 구조 변경
+46. DESTRUCTIVE ACTIONS
+
+다음 작업은 반드시 사용자 승인을 받는다.
+
+git reset --hard
+git clean
 git push --force
-API Key 변경/폐기
-외부 서비스 삭제
-패키지 대량 삭제
+Git history 변경
+파일 대량 삭제
+data/raw 전체 삭제
+data/processed 전체 삭제
+패키지 대량 제거
+.venv 삭제
 
-30. Notebook 규칙
+47. GIT WORKFLOW
 
-Notebook은 분석 및 실험용입니다.
+기본 branch:
 
-notebooks/
-├── 01_EDA.ipynb
-└── 02_Tech_Analysis.ipynb
-
-
-Notebook에서 검증된 코드는 최종적으로 다음으로 이동합니다.
-
-analysis/
-visualization/
+main
+develop
 
 
-서비스 코드가 Notebook에만 존재해서는 안 됩니다.
+기능 개발:
 
-31. 개발 일정
-Day 1 — 설계 및 환경
+feature/기능명
 
-목표:
 
-GitHub Repository
-       ↓
-프로젝트 구조
-       ↓
-Python 환경
-       ↓
-데이터 규격 확정
-       ↓
-TECH_STACK 확정
-       ↓
-크롤링 테스트
-       ↓
-Streamlit 실행
+예:
 
-완료 조건
-Repository 생성
-Branch 전략 확정
-프로젝트 구조 생성
-.gitignore 생성
-.env.example 생성
-jobs_raw.csv 컬럼 확정
-TECH_STACK 확정
-Streamlit 실행 성공
-32. Day 2 — 데이터 수집
+feature/common-ui
+feature/regional-analysis
+feature/security-map
+feature/mock-data
 
-목표:
 
-채용 사이트
+가능하면 main에 직접 push하지 않는다.
+
+48. COMMIT MESSAGE
+
+Conventional Commit 사용.
+
+예:
+
+feat: 서울 보안 인프라 Mock Data 추가
+feat: 지역별 시설 분석 함수 구현
+feat: 공통 KPI 컴포넌트 추가
+feat: 자치구별 보안 인프라 차트 추가
+feat: Streamlit 지역 분석 페이지 추가
+
+fix: 지역 필터 오류 수정
+refactor: 차트 함수 분리
+docs: 프로젝트 문서 수정
+chore: uv dependency 업데이트
+
+49. TASK EXECUTION RULE
+
+큰 작업은 작은 작업으로 나눈다.
+
+예:
+
+Task: Regional Analysis
+
+Subtask 1
+Mock Data 확인
+
+Subtask 2
+지역별 집계 함수
+
+Subtask 3
+차트 생성
+
+Subtask 4
+Streamlit 연결
+
+Subtask 5
+필터 테스트
+
+
+한 번에 모든 파일을 수정하지 않는다.
+
+50. PAGE DEVELOPMENT RULE
+
+새로운 Streamlit 페이지를 만들 때:
+
+1. 기존 공통 컴포넌트 확인
+2. 필요한 분석 함수 확인
+3. 필요한 차트 확인
+4. Page 구현
+5. Mock Data 실행
+6. UI 검증
+
+
+순서를 따른다.
+
+페이지 안에서 공통 UI를 새로 복사하지 않는다.
+
+51. MOCK DATA DEVELOPMENT RULE
+
+실제 데이터가 없더라도 모든 페이지가 실행되어야 한다.
+
+따라서:
+
+실제 데이터 존재
     ↓
-jobs_raw.csv
+실제 데이터 사용
 
-GitHub API
+실제 데이터 없음
     ↓
-github_raw.csv
-
-완료 조건
-실제 채용 데이터 확보
-GitHub 데이터 확보
-Raw CSV 생성
-데이터 스키마 준수
-33. Day 3 — 분석
-
-목표:
-
-Raw
- ↓
-Preprocessing
- ↓
-Technology Extraction
- ↓
-Analysis
- ↓
-Visualization Data
-
-완료 조건
-전체 기술 순위
-직무별 기술 분석
-신입 vs 경력 분석
-GitHub 비교
-핵심 그래프 생성
-34. Day 4 — Streamlit
-
-목표:
-
-Analysis
- ↓
-Plotly
- ↓
-Streamlit
-
-완료 조건
-Dashboard
-필터
-Tech Trend
-GitHub 비교
-Recommendation
-35. Day 5 — 통합
-
-Day 5에는 새로운 기능을 최대한 추가하지 않습니다.
-
-전체 시스템을 처음부터 끝까지 실행합니다.
-
-Crawler
- ↓
-Raw Data
- ↓
-Preprocessing
- ↓
-Analysis
- ↓
-Visualization
- ↓
-Recommendation
- ↓
-Streamlit
+Mock Data 사용
 
 
-발표 환경에서 한 번에 실행되는 것을 목표로 합니다.
+구조를 사용할 수 있다.
 
-36. MVP 범위
-🔴 반드시 완성
-채용 데이터 수집
-        ↓
-Requests / BeautifulSoup / Selenium
-        ↓
-Raw CSV
-        ↓
-Pandas 전처리
-        ↓
-기술 스택 추출
-        ↓
-직무별 분석
-        ↓
-신입/경력 분석
-        ↓
-GitHub API
-        ↓
-채용시장 vs GitHub 비교
-        ↓
-Plotly
-        ↓
-Streamlit
-        ↓
-기술 추천
+단, 이 fallback 구조가 실제 데이터 오류를 숨기지 않도록
+명확한 상태 표시를 제공한다.
 
-🟡 시간이 남으면
-지역별 분석
-월별 트렌드
-공고 검색
-공고 상세 페이지
+52. UI DESIGN
 
-🟢 최종 확장
-LLM
- ↓
-채용공고 요약
- ↓
-역량 분석
- ↓
-개인 맞춤 학습 로드맵
+전체 서비스의 UI는 일관성을 유지한다.
 
-37. Definition of Done
+기본 스타일:
 
-기능 완료를 선언하기 전에 반드시 검증합니다.
+Primary Color
+Dark Navy / Blue
 
-프로젝트 실행
-streamlit run app.py
+Accent
+Security Blue
+
+Background
+Light Gray
+
+Card
+White
+
+Warning
+Orange
+
+Danger
+Red
 
 
-정상 실행되어야 합니다.
+보안 인프라 서비스라는 성격에 맞게
+과도하게 화려한 디자인은 피한다.
+
+53. PAGE LAYOUT
+
+가능하면 다음 구조를 사용한다.
+
+Header
+↓
+Description
+↓
+Filters
+↓
+KPI
+↓
+Main Visualization
+↓
+Secondary Visualization
+↓
+Data Table
+
+
+중요한 정보가 위에 오도록 한다.
+
+54. CHART RULE
+
+차트에는 최소한 다음을 고려한다.
+
+제목
+축 이름
+단위
+범례
+데이터 정렬
+적절한 색상
+
+숫자만 표시하고 의미가 없는 차트를 만들지 않는다.
+
+55. DATA INTERPRETATION
+
+분석 결과를 사실 이상으로 해석하지 않는다.
+
+예를 들어:
+
+A지역에 CCTV가 많다.
+
+
+와
+
+A지역이 다른 지역보다 안전하다.
+
+
+는 동일하지 않다.
+
+보안 인프라 데이터만으로 범죄율이나 안전도를 단정하지 않는다.
+
+56. IMPORTANT ANALYTICAL LIMITATIONS
+
+다음 사항을 항상 고려한다.
+
+보안 인프라가 많다고 해서
+해당 지역이 반드시 안전한 것은 아니다.
+
+시설 수가 적다고 해서
+해당 지역이 반드시 위험한 것도 아니다.
+
+인구, 면적, 유동인구, 범죄 발생 데이터 등이 없으면
+밀도나 안전도에 대한 해석을 제한한다.
+
+데이터가 측정하지 않은 것을 추측하지 않는다.
+
+57. AI / LLM RULE
+
+LLM은 현재 MVP의 필수 기능이 아니다.
+
+사용자가 명시적으로 요청하지 않는 한
+LLM 기능을 추가하지 않는다.
+
+현재 우선순위:
 
 데이터
-
-다음 파일이 정상적으로 생성되어야 합니다.
-
-data/raw/jobs_raw.csv
-data/raw/github_raw.csv
-data/processed/jobs_clean.csv
-
-데이터 품질
-
-확인 항목:
-
-[ ] 필수 컬럼 존재
-[ ] 중복 데이터 처리
-[ ] 결측치 처리
-[ ] 기술명 정규화
-[ ] 날짜 형식 통일
-[ ] URL 정상 여부
-
+↓
 분석
-
-다음 분석이 정상적으로 실행되어야 합니다.
-
-[ ] 전체 기술 수요
-[ ] 직무별 기술 수요
-[ ] 신입 vs 경력
-[ ] 채용시장 vs GitHub
-
-Streamlit
-[ ] 메인 페이지 출력
-[ ] 직무 필터
-[ ] 경력 필터
-[ ] 지역 필터
-[ ] 기술 차트
-[ ] 직무별 기술 분석
-[ ] 신입/경력 비교
-[ ] GitHub 비교
-[ ] 기술 추천
-
-보안
-[ ] .env Git 제외
-[ ] API Key 하드코딩 없음
-[ ] API Key 로그 출력 없음
-[ ] .env.example 존재
-
-Git
-[ ] feature branch 사용
-[ ] 의미 있는 commit
-[ ] PR 생성
-[ ] develop 기준 충돌 확인
-[ ] main 직접 push 없음
-
-38. 최종 서비스 구조
-
-전체 시스템은 다음 구조를 유지합니다.
-
-                     ┌──────────────────┐
-                     │   채용 사이트    │
-                     └────────┬─────────┘
-                              ↓
-                    crawler/job_crawler.py
-                              ↓
-                         jobs_raw.csv
-                              ↓
-                  analysis/preprocessing.py
-                              ↓
-                        jobs_clean.csv
-                              ↓
-                   analysis/tech_analysis.py
-                              ↓
-               ┌──────────────┼──────────────┐
-               ↓              ↓              ↓
-            직무 분석       경력 분석       기술 분석
-               │              │              │
-               └──────────────┼──────────────┘
-                              ↓
-                   visualization/charts.py
-                              ↓
-                         Streamlit
-                              ↑
-                              │
-                  analysis/recommendation.py
-                              ↑
-                              │
-                       GitHub API
-
-39. 최종 목표
-
-JOB INSIGHT의 최종 목표는 단순히 채용공고를 보여주는 것이 아닙니다.
-
-사용자가 다음 질문에 답을 얻도록 하는 것입니다.
-
-"내가 원하는 IT 직무에 취업하려면 어떤 기술을 우선적으로 준비해야 하는가?"
-
-이를 위해:
-
-채용시장 데이터
-       +
-GitHub 데이터
-       ↓
-데이터 수집
-       ↓
-전처리
-       ↓
-기술 추출
-       ↓
-직무/경력별 분석
-       ↓
+↓
 시각화
-       ↓
-사용자 기술 비교
-       ↓
-🎯 학습 기술 추천
+↓
+Streamlit
 
 
-의 전체 파이프라인을 완성합니다.
+LLM은 이후 확장 기능으로 고려한다.
 
-40. Agent 최종 행동 규칙
+58. API FUTURE PHASE
 
-AI Agent는 항상 다음을 우선합니다.
+향후 실제 데이터 연결 단계에서는:
 
-기존 코드와 구조를 먼저 확인한다.
-AGENTS.md 규칙을 따른다.
-데이터 규격을 임의로 변경하지 않는다.
-공식 문서를 먼저 확인한다.
-최소 범위만 수정한다.
-API Key를 노출하지 않는다.
-파괴적 작업은 승인받는다.
-구현 후 반드시 테스트한다.
-테스트하지 않은 기능을 "완료"라고 보고하지 않는다.
-MVP 범위를 벗어나는 기능은 임의로 구현하지 않는다.
+Phase 1
+Mock Data
+
+Phase 2
+CSV / 정적 데이터
+
+Phase 3
+공공데이터
+
+Phase 4
+API
+
+Phase 5
+자동 수집
 
 
+순서로 확장하는 것을 권장한다.
+
+현재 단계에서는 Phase 1~2에 집중한다.
+
+59. COMPLETION CRITERIA
+
+기능을 "완료"라고 보고하기 전에 확인한다.
+
+[ ] 코드 작성
+[ ] import 오류 없음
+[ ] Mock Data 실행
+[ ] Streamlit 실행
+[ ] UI 확인
+[ ] 필터 확인
+[ ] Chart 확인
+[ ] Table 확인
+[ ] 오류 상태 확인
+
+
+검증하지 않은 기능은 완료라고 보고하지 않는다.
+
+60. FINAL REPORT FORMAT
+
+작업 완료 후 Agent는 다음 형식으로 보고한다.
+
+## 작업 완료
+
+### 변경 파일
+- components/...
+- analysis/...
+- visualization/...
+- pages/...
+
+### 구현 내용
+- ...
+- ...
+- ...
+
+### 테스트
+- uv run python ...
+- uv run streamlit run app.py
+- ...
+
+### 확인 결과
+- 정상 / 실패
+
+### 미구현
+- API
+- 실제 데이터 연결
+- ...
+
+### 주의사항
+- Mock Data 사용
+- ...
+
+61. ABSOLUTE RULES
+
+다음 규칙은 항상 우선한다.
+
+기존 코드를 먼저 확인한다.
+AGENTS.md를 먼저 읽는다.
+사용자 요구 범위를 벗어나지 않는다.
+API와 크롤러를 임의로 수정하지 않는다.
+실제 데이터가 없으면 Mock Data를 사용한다.
+Mock Data를 실제 데이터처럼 표현하지 않는다.
+분석과 UI를 분리한다.
+공통 UI는 재사용한다.
+중복 코드를 만들지 않는다.
+새 패키지를 임의로 설치하지 않는다.
+.env를 Git에 포함하지 않는다.
+API Key를 코드에 작성하지 않는다.
+테스트하지 않은 기능을 완료라고 하지 않는다.
+대규모 리팩터링을 임의로 하지 않는다.
+파괴적 작업은 반드시 승인받는다.
+불확실한 사항은 추측하지 말고 먼저 확인한다.
+데이터가 말하지 않는 내용을 임의로 해석하지 않는다.
+현재 MVP를 먼저 완성하고 확장 기능은 나중에 구현한다.
