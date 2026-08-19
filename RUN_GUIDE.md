@@ -14,7 +14,7 @@
 
 ## 2. 앱 실행 방법
 
-프로젝트 루트 디렉토리(`C:\Users\user\Desktop\job-insight`)에서 아래 명령어를 실행합니다.
+프로젝트 루트 디렉토리(`C:\Users\user\Desktop\seoul-security-insight`)에서 아래 명령어를 실행합니다.
 
 ```bash
 uv run streamlit run app.py

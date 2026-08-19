@@ -1,0 +1,10 @@
+{
+  "dataset_name": "security_infrastructure",
+  "source": "Seoul Security Insight Sample Registry",
+  "source_type": "sample",
+  "schema_version": "1.0.0",
+  "collected_at": null,
+  "updated_at": null,
+  "status": "sample_mode",
+  "description": "서울시 보안 인프라 (지구대/파출소, CCTV, 여성안심귀갓길, 안전시설) 개발 및 UI/분석 테스트용 샘플 메타데이터"
+}
