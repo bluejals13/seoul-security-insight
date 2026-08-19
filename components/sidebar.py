@@ -2,9 +2,9 @@
 SEOUL SECURITY INFRASTRUCTURE INSIGHT - Sidebar Filter Component
 """
 
-from typing import Optional, List
 import pandas as pd
 import streamlit as st
+
 from config.settings import FACILITY_TYPES, SEOUL_DISTRICTS
 
 
@@ -47,6 +47,24 @@ def filter_data(
             pass
 
     return filtered_df
+
+
+def render_crime_filters(df: pd.DataFrame) -> pd.DataFrame:
+    """Filter standardized crime rows while retaining the legacy sidebar API."""
+    st.sidebar.markdown("## 범죄 분석 필터")
+    years = sorted(df["year"].dropna().unique().tolist())
+    districts = sorted(df["district"].dropna().unique().tolist())
+    types = sorted(df["crime_type"].dropna().unique().tolist())
+    year = st.sidebar.selectbox("연도", years)
+    selected_districts = st.sidebar.multiselect("자치구", districts, default=districts)
+    selected_types = st.sidebar.multiselect("범죄 유형", types, default=types)
+    result = df[
+        (df["year"] == year)
+        & df["district"].isin(selected_districts)
+        & df["crime_type"].isin(selected_types)
+    ]
+    st.sidebar.caption(f"조회 결과: {len(result):,}건")
+    return result
 
 
 def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
@@ -94,7 +112,7 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     st.sidebar.markdown("---")
-    
+
     # 필터링 수행
     filtered_df = filter_data(
         df,

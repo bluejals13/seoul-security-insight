@@ -1,6 +1,4 @@
-"""
-SEOUL SECURITY INFRASTRUCTURE INSIGHT - Configuration & Settings
-"""
+"""Shared Seoul configuration."""
 
 SEOUL_DISTRICTS = [
     "강남구",
@@ -30,14 +28,21 @@ SEOUL_DISTRICTS = [
     "중랑구",
 ]
 
-FACILITY_TYPES = [
-    "CCTV",
-    "보안등",
-    "비상벨",
-    "방범시설",
-    "안전시설",
-]
+COLOR_PALETTE = {
+    "primary": "#16324F",
+    "secondary": "#0B1F33",
+    "accent": "#1481BA",
+    "highlight": "#5BC0EB",
+    "background": "#F6F9FC",
+    "card": "#FFFFFF",
+    "warning": "#F59E0B",
+    "danger": "#DC2626",
+    "success": "#059669",
+    "text": "#243447",
+}
 
+# Retained for the legacy infrastructure pages.
+FACILITY_TYPES = ["CCTV", "보안등", "비상벨", "방범시설", "안전시설"]
 REQUIRED_COLUMNS = [
     "facility_id",
     "district",
@@ -49,28 +54,11 @@ REQUIRED_COLUMNS = [
     "installed_year",
     "count",
 ]
-
-# Demo Data Notice Text
-MOCK_DATA_NOTICE = "DEMO DATA: 현재 화면은 서비스 UI 및 분석 로직 검증을 위한 Mock Data입니다."
-
-# UI Color Palette (Dark Navy / Security Blue)
-COLOR_PALETTE = {
-    "primary": "#1E293B",       # Slate Navy
-    "secondary": "#0F172A",     # Dark Navy
-    "accent": "#0284C7",        # Security Blue
-    "highlight": "#38BDF8",     # Sky Blue
-    "background": "#F8FAFC",    # Light Gray
-    "card": "#FFFFFF",          # White
-    "warning": "#F97316",       # Orange
-    "danger": "#EF4444",        # Red
-    "success": "#10B981",       # Emerald Green
-    "text": "#334155",          # Dark Gray Text
-}
-
 FACILITY_COLORS = {
-    "CCTV": "#0284C7",        # Security Blue
-    "보안등": "#F59E0B",      # Amber Yellow
-    "비상벨": "#EF4444",      # Bright Red
-    "방범시설": "#10B981",    # Emerald Green
-    "안전시설": "#8B5CF6",    # Purple
+    "CCTV": "#0284C7",
+    "보안등": "#F59E0B",
+    "비상벨": "#EF4444",
+    "방범시설": "#10B981",
+    "안전시설": "#8B5CF6",
 }
+MOCK_DATA_NOTICE = "데모 데이터는 기존 보안 인프라 페이지에서만 사용됩니다."

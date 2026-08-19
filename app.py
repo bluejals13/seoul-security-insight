@@ -1,52 +1,51 @@
-"""
-SEOUL SECURITY INFRASTRUCTURE INSIGHT - Main Application Entrypoint
-"""
+"""Seoul crime-rate and streetlight analysis landing page."""
 
 import streamlit as st
-from utils.data_loader import load_security_data
-from analysis.statistics import get_kpi_metrics
-from components.header import render_header
-from components.metrics import render_kpi_cards
-from components.cards import render_info_card, render_section_title
 
-# 1. Streamlit 페이지 설정
-st.set_page_config(
-    page_title="서울시 보안 인프라 인사이트",
-    page_icon="🛡️",
-    layout="wide",
-    initial_sidebar_state="expanded",
+from analysis.crime_streetlight_analysis import build_comparison_dataset
+from utils.crime_streetlight_loader import (
+    load_crime_data,
+    load_population_data,
+    load_streetlight_data,
+    quality_report,
 )
 
+st.set_page_config(page_title="서울 범죄율·가로등 분석", page_icon="💡", layout="wide")
 
-def main():
-    # 2. 공통 헤더 및 DEMO DATA 안내
-    render_header()
 
-    # 3. 데이터 로딩 & 전처리 (Data Loader)
-    df, is_mock, source_name = load_security_data()
-
-    # 4. 전체 KPI 지표 계산 및 표시
-    kpis = get_kpi_metrics(df)
-
-    render_section_title("📌 서울시 보안 인프라 종합 요약 (Summary KPI)")
-    render_kpi_cards(
-        total_count=kpis["total_count"],
-        district_count=kpis["district_count"],
-        type_count=kpis["type_count"],
-        avg_count=kpis["avg_per_district"],
+def main() -> None:
+    st.title("서울 자치구별 범죄율과 가로등 설치 수준")
+    st.caption(
+        "범죄 발생과 가로등 설치 수준의 공간적·통계적 관계를 탐색합니다. 인과관계를 주장하지 않습니다."
     )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # 5. 서비스 개요 및 사이드바 안내 카드
-    render_info_card(
-        title="🔍 대시보드 이용 가이드",
-        content=(
-            "왼쪽 사이드바의 <b>Pages 메뉴</b>를 통해 상세 분석 페이지로 이동할 수 있습니다.<br>"
-            "• <b>1_📊_Overview</b>: 서울시 25개 자치구 전체의 보안 인프라 현황, 시설 유형별 비중, 분포 Heatmap, 연도별 추이를 종합 탐색합니다.<br>"
-            "※ 현재 화면에 표시되는 모든 통계 수치 및 지도는 서비스 UI 검증용 Mock Data입니다."
-        ),
+    crime, population, lights = (
+        load_crime_data(),
+        load_population_data(),
+        load_streetlight_data(),
     )
+    report = quality_report(crime, population, lights)
+    comparison, reason = build_comparison_dataset(crime, population, lights)
+    c1, c2, c3 = st.columns(3)
+    c1.metric(
+        "2024년 서울 5대 범죄 발생",
+        f"{int(crime.loc[crime['crime_type'] == '소계', 'crime_count'].sum()):,}건",
+    )
+    c2.metric("2026년 6월 등록인구", f"{int(population['population'].sum()):,}명")
+    c3.metric("가로등 위치 레코드", f"{len(lights):,}개")
+    st.subheader("데이터 출처")
+    st.write(
+        "- 범죄: `5대_범죄_발생현황_20260819133035.csv` (2024년, 자치구별 발생/검거)\n- 인구: `등록인구(월별)_20260819133114.csv` (2026년 6월 등록인구)\n- 가로등: `서울시 가로등 위치 정보.csv` (관리번호·위도·경도)"
+    )
+    if reason:
+        st.warning(reason)
+        st.info(
+            "가로등 원본에 자치구 또는 주소가 제공되고 2024년 인구 기준 데이터가 확보되면 자치구 비교·범죄율·4분면 분석이 활성화됩니다."
+        )
+    else:
+        st.success(f"{len(comparison)}개 자치구 비교 데이터를 생성했습니다.")
+    with st.expander("데이터 품질 검증 결과"):
+        st.json(report)
+    st.caption("왼쪽 페이지 메뉴에서 범죄 발생, 가로등 위치, 비교 분석을 확인하세요.")
 
 
 if __name__ == "__main__":

@@ -44,8 +44,8 @@ Thumbs.db
 # Local data
 # =========================
 # 실제 수집 데이터가 크면 Git에 넣지 않음
-# data/raw/
-# data/processed/
+data/raw/
+data/processed/
 
 # =========================
 # Jupyter

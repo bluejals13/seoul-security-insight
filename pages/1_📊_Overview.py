@@ -1,101 +1,110 @@
-"""
-SEOUL SECURITY INFRASTRUCTURE INSIGHT - Page 1: Overview Dashboard
-"""
+"""Integrated overview retaining the established component-oriented page structure."""
 
 import streamlit as st
-from utils.data_loader import load_security_data
-from analysis.regional_analysis import (
-    get_facility_count_by_district,
-    get_facility_count_by_type,
-    get_district_facility_crosstab,
-)
-from analysis.statistics import get_kpi_metrics, get_yearly_facility_count
-from visualization.charts import (
-    create_district_bar_chart,
-    create_facility_type_donut_chart,
-    create_district_facility_heatmap,
-    create_yearly_facility_line_chart,
+
+from analysis.crime_streetlight_analysis import build_comparison_dataset
+from components.cards import (
+    render_empty_state,
+    render_info_card,
+    render_section_title,
+    render_warning_card,
 )
 from components.header import render_header
-from components.sidebar import render_sidebar_filters
-from components.metrics import render_kpi_cards
+from components.metrics import render_analysis_metrics
+from components.sidebar import render_crime_filters
 from components.tables import render_result_table
-from components.cards import render_section_title, render_empty_state
+from utils.crime_streetlight_loader import (
+    load_crime_data,
+    load_population_data,
+    load_streetlight_data,
+    quality_report,
+)
+from visualization.crime_streetlight_charts import (
+    crime_count_bar,
+    crime_heatmap,
+    crime_type_pie,
+)
 
-# 1. Streamlit 페이지 설정
 st.set_page_config(
-    page_title="Overview | 서울 보안 인프라",
-    page_icon="📊",
-    layout="wide",
+    page_title="Overview | 서울 범죄율·가로등", page_icon="📊", layout="wide"
 )
 
 
-def main():
-    # 2. 공통 헤더 및 DEMO DATA 안내
+def main() -> None:
+    """Render the former dashboard flow with the new, scoped source data."""
     render_header()
-
-    # 3. 데이터 로딩 & 전처리 (Data Loader 계층 사용)
-    df, is_mock, source_name = load_security_data()
-
-    # 4. 공통 Sidebar 필터 적용
-    filtered_df = render_sidebar_filters(df)
-
-
-    if filtered_df is None or filtered_df.empty:
-        render_empty_state("선택하신 조건에 해당하는 보안 인프라 데이터가 없습니다.")
+    crime, population, lights = (
+        load_crime_data(),
+        load_population_data(),
+        load_streetlight_data(),
+    )
+    filtered = render_crime_filters(crime)
+    if filtered.empty:
+        render_empty_state("선택한 조건에 해당하는 범죄 발생 데이터가 없습니다.")
         return
 
-    # 5. KPI Cards 렌더링 (실제 설치 수량 count 기준)
-    kpis = get_kpi_metrics(filtered_df)
-    render_section_title("📌 주요 현황 KPI 지표")
-    render_kpi_cards(
-        total_count=kpis["total_count"],
-        district_count=kpis["district_count"],
-        type_count=kpis["type_count"],
-        avg_count=kpis["avg_per_district"],
+    totals = filtered[filtered["crime_type"] == "소계"]
+    total_count = int(totals["crime_count"].sum()) if not totals.empty else 0
+    max_district = (
+        totals.loc[totals["crime_count"].idxmax(), "district"]
+        if not totals.empty
+        else "-"
+    )
+    render_section_title(
+        "📌 주요 현황 KPI 지표", "각 원본의 실제 기준 시점을 유지해 표시합니다."
+    )
+    render_analysis_metrics(
+        [
+            ("범죄 발생 건수", f"{total_count:,}건"),
+            ("범죄 발생 최다 자치구", max_district),
+            ("2026년 6월 등록인구", f"{int(population['population'].sum()):,}명"),
+            ("가로등 위치 레코드", f"{len(lights):,}개"),
+        ]
     )
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # 6. 메인 차트 2개 컬럼 배치 (자치구별 바 차트 & 시설 유형별 도넛 차트)
-    col1, col2 = st.columns([1.2, 1])
-
-    with col1:
-        render_section_title("🏙️ 자치구별 보안 인프라 설치 수")
-        dist_counts = get_facility_count_by_district(filtered_df)
-        fig_dist = create_district_bar_chart(dist_counts)
-        st.plotly_chart(fig_dist, use_container_width=True)
-
-    with col2:
-        render_section_title("🍩 시설 유형별 설치 비중")
-        type_counts = get_facility_count_by_type(filtered_df)
-        fig_type = create_facility_type_donut_chart(type_counts)
-        st.plotly_chart(fig_type, use_container_width=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # 7. 자치구 x 시설 유형 Heatmap
-    render_section_title("🌡️ 자치구 × 시설 유형 분포 Heatmap")
-    crosstab_df = get_district_facility_crosstab(filtered_df)
-    fig_heatmap = create_district_facility_heatmap(crosstab_df)
-    st.plotly_chart(fig_heatmap, use_container_width=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # 8. 연도별 설치 추이 (Line Chart)
-    render_section_title("📈 연도별 보안 인프라 신규 설치 추이")
-    yearly_df = get_yearly_facility_count(filtered_df)
-    if not yearly_df.empty and len(yearly_df) > 1:
-        fig_yearly = create_yearly_facility_line_chart(yearly_df)
-        st.plotly_chart(fig_yearly, use_container_width=True)
+    render_section_title("데이터 출처 및 기준")
+    render_info_card(
+        "로컬 원본 CSV",
+        "범죄: 2024년 5대 범죄 발생현황 / 등록인구: 2026년 6월 / 가로등: 관리번호·위도·경도 위치 정보",
+    )
+    comparison, reason = build_comparison_dataset(crime, population, lights)
+    if reason:
+        render_warning_card(reason)
     else:
-        render_empty_state("연도별 설치 추이를 분석하기에 충분한 데이터가 없습니다.")
+        st.success(f"{len(comparison)}개 자치구의 결합 분석을 생성했습니다.")
 
     st.markdown("<br>", unsafe_allow_html=True)
+    left, right = st.columns([1.2, 1])
+    with left:
+        render_section_title("🏙️ 자치구별 범죄 발생 건수")
+        st.plotly_chart(crime_count_bar(totals), use_container_width=True)
+    with right:
+        render_section_title("🍩 범죄 유형별 발생 비중")
+        type_counts = (
+            filtered[filtered["crime_type"] != "소계"]
+            .groupby("crime_type", as_index=False)["crime_count"]
+            .sum()
+        )
+        st.plotly_chart(crime_type_pie(type_counts), use_container_width=True)
 
-    # 9. 자치구별 요약 Table
-    render_section_title("📋 자치구별 보안 인프라 집계표 (Summary Table)")
-    render_result_table(crosstab_df, title="자치구별 / 시설유형별 수량 집계")
+    st.markdown("<br>", unsafe_allow_html=True)
+    render_section_title("🌡️ 자치구 × 범죄 유형 분포 Heatmap")
+    heatmap_data = filtered[filtered["crime_type"] != "소계"]
+    if heatmap_data.empty:
+        render_empty_state("범죄 유형별 발생 데이터를 표시할 수 없습니다.")
+    else:
+        st.plotly_chart(crime_heatmap(heatmap_data), use_container_width=True)
+
+    render_section_title("📋 자치구별 범죄 집계표")
+    render_result_table(
+        filtered.sort_values(["district", "crime_type"]),
+        title="자치구별 / 범죄유형별 발생 건수",
+    )
+    with st.expander("데이터 품질 검증 결과"):
+        st.json(quality_report(crime, population, lights))
+    st.caption(
+        "가로등 자치구 매핑과 동일연도 인구가 제공되기 전까지 범죄율·가로등 밀도·4분면 분석은 비활성화됩니다."
+    )
 
 
 if __name__ == "__main__":
