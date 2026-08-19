@@ -7,6 +7,9 @@ from analysis.crime_streetlight_analysis import (
 )
 from config.settings import SEOUL_DISTRICTS
 from utils.crime_streetlight_loader import (
+    DEFAULT_ANALYSIS_YEAR,
+    SourceDataError,
+    available_analysis_years,
     load_crime_data,
     load_population_data,
     load_streetlight_data,
@@ -29,8 +32,22 @@ def test_actual_raw_loaders_and_normalization() -> None:
     assert set(crime.columns) == {"year", "district", "crime_type", "crime_count"}
     assert len(crime) == 150 and len(population) == 25 and len(streetlights) == 19_316
     assert set(crime["district"]) == set(SEOUL_DISTRICTS)
+    assert int(crime.loc[crime["crime_type"] == "소계", "crime_count"].sum()) == 80_819
+    assert int(population["population"].sum()) == 4_619_963
     assert normalize_district(" 서울특별시 종로구 ") == "종로구"
     assert normalize_district("알수없는구") is None
+
+
+def test_analysis_year_registry_defaults_to_2024_and_never_falls_back() -> None:
+    assert DEFAULT_ANALYSIS_YEAR == 2024
+    assert available_analysis_years() == [2024]
+    try:
+        load_crime_data(2025)
+    except SourceDataError as exc:
+        assert "2025" in str(exc)
+        assert "대체하지 않습니다" in str(exc)
+    else:
+        raise AssertionError("missing-year crime data must not fall back to another source")
 
 
 def test_boundary_loader_and_spatial_join_actual_data() -> None:
@@ -83,7 +100,7 @@ def test_crime_rate_and_density_formulae() -> None:
             "longitude": [127.0] * 10,
         }
     )
-    comparison, reason = build_comparison_dataset(crime, population, lights)
+    comparison, reason = build_comparison_dataset(crime, population, lights, 2024, 2023)
     assert reason is None
     assert comparison.loc[0, "streetlights_per_1000_people"] == 0.5
     assert comparison.loc[0, "crime_count_2024"] == 100
@@ -92,7 +109,9 @@ def test_crime_rate_and_density_formulae() -> None:
 
 def test_actual_final_dataset_has_complete_25_districts() -> None:
     joined, spatial_report = spatial_join_streetlights(load_streetlight_data())
-    data, reason = build_comparison_dataset(load_crime_data(), load_population_data(), joined)
+    data, reason = build_comparison_dataset(
+        load_crime_data(), load_population_data(), joined, 2024, 2023
+    )
     report = quality_report(
         load_crime_data(), load_population_data(), joined, spatial_report=spatial_report, final_data=data
     )

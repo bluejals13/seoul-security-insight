@@ -3,7 +3,12 @@
 import streamlit as st
 
 from analysis.crime_streetlight_analysis import calculate_crime_rates
-from utils.crime_streetlight_loader import load_crime_data, load_population_data
+from components.analysis_year import render_analysis_year_selector
+from utils.crime_streetlight_loader import (
+    SourceDataError,
+    load_crime_data,
+    load_population_data,
+)
 from visualization.crime_streetlight_charts import (
     crime_count_bar,
     crime_heatmap,
@@ -15,14 +20,19 @@ st.set_page_config(page_title="서울 지역별 범죄율 분석", page_icon="�
 
 def main() -> None:
     st.title("서울 지역별 범죄율 분석")
-    crime, population = load_crime_data(), load_population_data()
-    years, districts, types = (
-        sorted(crime.year.unique()),
+    year = render_analysis_year_selector(key="crime-analysis-year")
+    if year is None:
+        return
+    try:
+        crime, population = load_crime_data(year), load_population_data(year)
+    except SourceDataError as exc:
+        st.error(str(exc))
+        return
+    districts, types = (
         sorted(crime.district.unique()),
         sorted(crime.crime_type.unique()),
     )
-    a, b, c = st.columns(3)
-    year = a.selectbox("연도", years)
+    b, c = st.columns(2)
     selected_districts = b.multiselect("자치구", districts, default=districts)
     selected_types = c.multiselect("범죄 유형", types, default=types)
     filtered = crime[

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -10,9 +11,15 @@ import pandas as pd
 from config.settings import SEOUL_DISTRICTS
 
 RAW_DIR = Path("data/raw")
-CRIME_FILE = RAW_DIR / "5대_범죄_발생현황_2024.csv"
-POPULATION_FILE = RAW_DIR / "등록인구_2024.csv"
-STREETLIGHT_FILE = RAW_DIR / "서울시_가로등_위치_2023.csv"
+DEFAULT_ANALYSIS_YEAR = 2024
+
+# Only these source families participate in the risk analysis.  Other raw CSVs
+# may contain a year in their filename, but are intentionally not auto-enrolled.
+_DATASET_PATTERNS = {
+    "crime": re.compile(r"^5대_범죄_발생현황_(?P<year>\d{4})\.csv$"),
+    "population": re.compile(r"^등록인구_(?P<year>\d{4})\.csv$"),
+    "streetlight": re.compile(r"^서울시_가로등_위치_(?P<year>\d{4})\.csv$"),
+}
 
 
 class SourceDataError(ValueError):
@@ -33,12 +40,69 @@ def _read_raw(path: Path, encoding: str) -> pd.DataFrame:
     return pd.read_csv(path, encoding=encoding, header=None)
 
 
-def load_crime_data() -> pd.DataFrame:
-    """Convert the observed 4-row 2024 crime header to the crime standard schema."""
-    raw = _read_raw(CRIME_FILE, "utf-8-sig")
+def discover_dataset_files(dataset: str) -> dict[int, Path]:
+    """Return explicitly supported source files indexed by the year in their name."""
+    try:
+        pattern = _DATASET_PATTERNS[dataset]
+    except KeyError as exc:
+        raise ValueError(f"지원하지 않는 데이터셋입니다: {dataset}") from exc
+
+    discovered: dict[int, Path] = {}
+    for path in RAW_DIR.glob("*.csv"):
+        match = pattern.fullmatch(path.name)
+        if match is None:
+            continue
+        year = int(match["year"])
+        if year in discovered:
+            raise SourceDataError(f"{dataset} {year}년 원본 파일이 둘 이상입니다.")
+        discovered[year] = path
+    return discovered
+
+
+def available_analysis_years() -> list[int]:
+    """Return all selectable years discovered for crime or population sources.
+
+    A year with just one of the two files remains selectable so the UI can
+    clearly explain the missing counterpart instead of substituting another year.
+    """
+    return sorted(
+        set(discover_dataset_files("crime")) | set(discover_dataset_files("population")),
+        reverse=True,
+    )
+
+
+def source_years(analysis_year: int) -> dict[str, int | None]:
+    """Expose actual source years for the selected analysis year and streetlights."""
+    return {
+        "crime": analysis_year if analysis_year in discover_dataset_files("crime") else None,
+        "population": (
+            analysis_year if analysis_year in discover_dataset_files("population") else None
+        ),
+        "streetlight": next(iter(discover_dataset_files("streetlight")), None),
+    }
+
+
+def _source_file(dataset: str, year: int) -> Path:
+    files = discover_dataset_files(dataset)
+    if path := files.get(year):
+        return path
+    available = ", ".join(map(str, sorted(files))) or "없음"
+    raise SourceDataError(
+        f"선택한 분석 기준 연도 {year}년의 {dataset} 데이터가 없습니다. "
+        f"사용 가능한 연도: {available}. 다른 연도 데이터로 대체하지 않습니다."
+    )
+
+
+def load_crime_data(year: int = DEFAULT_ANALYSIS_YEAR) -> pd.DataFrame:
+    """Convert the selected year's 5-major-crime source to the standard schema."""
+    raw = _read_raw(_source_file("crime", year), "utf-8-sig")
     if raw.shape[0] < 5 or raw.shape[1] < 4:
         raise SourceDataError("범죄 CSV의 다중 헤더 구조가 예상과 다릅니다.")
-    year = int(str(raw.iloc[0, 2]).strip())
+    source_year = int(str(raw.iloc[0, 2]).strip())
+    if source_year != year:
+        raise SourceDataError(
+            f"범죄 파일명 연도({year})와 CSV 내부 연도({source_year})가 일치하지 않습니다."
+        )
     records: list[dict[str, Any]] = []
     for col in range(2, raw.shape[1], 2):
         crime_type, measure = (
@@ -52,7 +116,7 @@ def load_crime_data() -> pd.DataFrame:
             if district is not None:  # Total row is intentionally excluded.
                 records.append(
                     {
-                        "year": year,
+                        "year": source_year,
                         "district": district,
                         "crime_type": crime_type,
                         "crime_count": pd.to_numeric(row.iloc[col], errors="coerce"),
@@ -68,20 +132,24 @@ def load_crime_data() -> pd.DataFrame:
     )
 
 
-def load_population_data() -> pd.DataFrame:
-    """Load 2024 registered population by district from the local source."""
-    raw = _read_raw(POPULATION_FILE, "utf-8-sig")
+def load_population_data(year: int = DEFAULT_ANALYSIS_YEAR) -> pd.DataFrame:
+    """Load selected-year registered population by district from the local source."""
+    raw = _read_raw(_source_file("population", year), "utf-8-sig")
     if raw.shape[0] < 4 or raw.shape[1] < 5:
         raise SourceDataError("등록인구 CSV의 다중 헤더 구조가 예상과 다릅니다.")
-    year = int(str(raw.iloc[0, 3]).strip()[:4])
+    source_year = int(str(raw.iloc[0, 3]).strip()[:4])
+    if source_year != year:
+        raise SourceDataError(
+            f"등록인구 파일명 연도({year})와 CSV 내부 연도({source_year})가 일치하지 않습니다."
+        )
     records = []
     for _, row in raw.iloc[3:].iterrows():
         district = normalize_district(row.iloc[1])
         if district is not None:
             records.append(
                 {
-                    "year": year,
-                    "period": f"{year}년",
+                    "year": source_year,
+                    "period": f"{source_year}년",
                     "district": district,
                     "population": pd.to_numeric(row.iloc[4], errors="coerce"),
                 }
@@ -102,7 +170,13 @@ def load_streetlight_data() -> pd.DataFrame:
     District, address, and installation year do not exist in the source, so they
     stay missing rather than being inferred from coordinates or identifiers.
     """
-    raw = _read_raw(STREETLIGHT_FILE, "cp949")
+    streetlight_files = discover_dataset_files("streetlight")
+    if len(streetlight_files) != 1:
+        raise SourceDataError(
+            "가로등 원본은 현재 하나의 연도만 지원합니다. "
+            f"발견된 연도: {', '.join(map(str, sorted(streetlight_files))) or '없음'}"
+        )
+    raw = _read_raw(next(iter(streetlight_files.values())), "cp949")
     if raw.shape[0] < 2 or raw.shape[1] != 3:
         raise SourceDataError("가로등 CSV의 3열 구조가 예상과 다릅니다.")
     data = raw.iloc[1:].copy()

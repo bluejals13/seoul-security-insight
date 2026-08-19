@@ -89,14 +89,19 @@ def streetlight_map(data: pd.DataFrame, limit: int = 5000) -> folium.Map:
     return m
 
 
-def risk_scatter(data: pd.DataFrame):
+def risk_scatter(data: pd.DataFrame, analysis_year: int, streetlight_year: int | None):
+    """Render risk inputs with labels matching the selected source years."""
     return px.scatter(
         data,
         x="streetlights_per_1000_people",
         y="crime_rate_per_10000",
         text="district",
         color="quadrant",
-        hover_data=["crime_count_2024", "population_2024", "streetlight_count_2023"],
+        hover_data=[
+            f"crime_count_{analysis_year}",
+            f"population_{analysis_year}",
+            f"streetlight_count_{streetlight_year or 'reference'}",
+        ],
         labels={
             "streetlights_per_1000_people": "인구 1,000명당 가로등 수",
             "crime_rate_per_10000": "인구 1만 명당 범죄 발생 건수",

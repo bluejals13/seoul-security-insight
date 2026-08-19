@@ -3,11 +3,14 @@
 import streamlit as st
 
 from analysis.crime_streetlight_analysis import build_comparison_dataset
+from components.analysis_year import render_analysis_year_selector
 from utils.crime_streetlight_loader import (
+    SourceDataError,
     load_crime_data,
     load_population_data,
     load_streetlight_data,
     quality_report,
+    source_years,
 )
 from utils.district_boundary_loader import (
     load_district_boundaries,
@@ -23,25 +26,35 @@ def main() -> None:
     st.caption(
         "범죄 발생과 가로등 설치 수준의 공간적·통계적 관계를 탐색합니다. 인과관계를 주장하지 않습니다."
     )
-    crime, population, lights = (
-        load_crime_data(),
-        load_population_data(),
-        load_streetlight_data(),
-    )
+    analysis_year = render_analysis_year_selector(key="landing-analysis-year")
+    if analysis_year is None:
+        return
+    try:
+        crime, population, lights = (
+            load_crime_data(analysis_year),
+            load_population_data(analysis_year),
+            load_streetlight_data(),
+        )
+    except SourceDataError as exc:
+        st.error(str(exc))
+        return
     boundaries = load_district_boundaries()
     joined_lights, spatial_report = spatial_join_streetlights(lights, boundaries)
-    comparison, reason = build_comparison_dataset(crime, population, joined_lights)
+    years = source_years(analysis_year)
+    comparison, reason = build_comparison_dataset(
+        crime, population, joined_lights, analysis_year, years["streetlight"]
+    )
     report = quality_report(crime, population, joined_lights, validate_district_boundaries(boundaries), spatial_report, comparison)
     c1, c2, c3 = st.columns(3)
     c1.metric(
-        "2024년 서울 5대 범죄 발생",
+        f"{analysis_year}년 서울 5대 범죄 발생",
         f"{int(crime.loc[crime['crime_type'] == '소계', 'crime_count'].sum()):,}건",
     )
-    c2.metric("2024년 등록인구", f"{int(population['population'].sum()):,}명")
+    c2.metric(f"{analysis_year}년 등록인구", f"{int(population['population'].sum()):,}명")
     c3.metric("가로등 위치 레코드", f"{len(lights):,}개")
     st.subheader("데이터 출처")
     st.write(
-        "- 범죄: `5대_범죄_발생현황_2024.csv` (2024년, 자치구별 발생/검거)\n- 인구: `등록인구_2024.csv` (2024년 등록인구)\n- 가로등: `서울시_가로등_위치_2023.csv` (WGS84 위도·경도)\n- 경계: `data/reference/서울시 상권분석서비스(영역-자치구).shp` (EPSG:5181)"
+        f"- 범죄: {analysis_year}년 5대 범죄 발생현황\n- 인구: {analysis_year}년 등록인구\n- 가로등: {years['streetlight']}년 위치 자료 (WGS84 위도·경도)\n- 경계: `data/reference/서울시 상권분석서비스(영역-자치구).shp` (EPSG:5181)"
     )
     if reason:
         st.warning(reason)

@@ -3,6 +3,7 @@
 import streamlit as st
 
 from analysis.crime_streetlight_analysis import build_comparison_dataset
+from components.analysis_year import render_analysis_year_selector
 from components.cards import (
     render_empty_state,
     render_info_card,
@@ -14,10 +15,12 @@ from components.metrics import render_analysis_metrics
 from components.sidebar import render_crime_filters
 from components.tables import render_result_table
 from utils.crime_streetlight_loader import (
+    SourceDataError,
     load_crime_data,
     load_population_data,
     load_streetlight_data,
     quality_report,
+    source_years,
 )
 from visualization.crime_streetlight_charts import (
     crime_count_bar,
@@ -33,11 +36,18 @@ st.set_page_config(
 def main() -> None:
     """Render the former dashboard flow with the new, scoped source data."""
     render_header()
-    crime, population, lights = (
-        load_crime_data(),
-        load_population_data(),
-        load_streetlight_data(),
-    )
+    analysis_year = render_analysis_year_selector(key="overview-analysis-year")
+    if analysis_year is None:
+        return
+    try:
+        crime, population, lights = (
+            load_crime_data(analysis_year),
+            load_population_data(analysis_year),
+            load_streetlight_data(),
+        )
+    except SourceDataError as exc:
+        render_warning_card(str(exc))
+        return
     filtered = render_crime_filters(crime)
     if filtered.empty:
         render_empty_state("선택한 조건에 해당하는 범죄 발생 데이터가 없습니다.")
@@ -57,7 +67,7 @@ def main() -> None:
         [
             ("범죄 발생 건수", f"{total_count:,}건"),
             ("범죄 발생 최다 자치구", max_district),
-            ("2026년 6월 등록인구", f"{int(population['population'].sum()):,}명"),
+            (f"{analysis_year}년 등록인구", f"{int(population['population'].sum()):,}명"),
             ("가로등 위치 레코드", f"{len(lights):,}개"),
         ]
     )
@@ -65,9 +75,11 @@ def main() -> None:
     render_section_title("데이터 출처 및 기준")
     render_info_card(
         "로컬 원본 CSV",
-        "범죄: 2024년 5대 범죄 발생현황 / 등록인구: 2026년 6월 / 가로등: 관리번호·위도·경도 위치 정보",
+        f"범죄: {analysis_year}년 5대 범죄 발생현황 / 등록인구: {analysis_year}년 / 가로등: {source_years(analysis_year)['streetlight']}년 관리번호·위도·경도 위치 정보",
     )
-    comparison, reason = build_comparison_dataset(crime, population, lights)
+    comparison, reason = build_comparison_dataset(
+        crime, population, lights, analysis_year, source_years(analysis_year)["streetlight"]
+    )
     if reason:
         render_warning_card(reason)
     else:
