@@ -17,7 +17,7 @@
 프로젝트 루트 디렉토리(`C:\Users\user\Desktop\seoul-security-insight`)에서 아래 명령어를 실행합니다.
 
 ```bash
-uv run streamlit run app.py
+.venv/Scripts/python.exe -m streamlit run app.py
 ```
 
 실행 성공 시 다음과 같은 터미널 메시지와 함께 브라우저에서 서비스가 자동으로 론칭됩니다.
@@ -49,13 +49,13 @@ uv run streamlit run app.py
 
 ### Python Import 테스트
 ```bash
-uv run python -c "import app; print('APP IMPORT OK')"
-uv run python -c "import runpy; runpy.run_path('pages/1_📊_Overview.py'); print('OVERVIEW IMPORT OK')"
+.venv/Scripts/python.exe -c "import app; print('APP IMPORT OK')"
+.venv/Scripts/python.exe -c "import runpy; runpy.run_path('pages/1_📊_Overview.py'); print('OVERVIEW IMPORT OK')"
 ```
 
 ### 전처리기 및 모듈 통합 테스트
 ```bash
-uv run python -c "from utils.mock_data import get_mock_data; from analysis.preprocessing import preprocess_data; df = preprocess_data(get_mock_data()); print('Cleaned Data Shape:', df.shape)"
+.venv/Scripts/python.exe -c "from utils.mock_data import get_mock_data; from analysis.preprocessing import preprocess_data; df = preprocess_data(get_mock_data()); print('Cleaned Data Shape:', df.shape)"
 ```
 
 ---
@@ -103,5 +103,5 @@ Data Loader는 내부적으로 다음 9개 표준 컬럼을 사용합니다.
 프로젝트 루트에서 실행합니다.
 
 ```bash
-uv run streamlit run app.py
+.venv/Scripts/python.exe -m streamlit run app.py
 

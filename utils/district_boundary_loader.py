@@ -73,43 +73,124 @@ def load_district_boundaries() -> gpd.GeoDataFrame:
 
 
 def spatial_join_streetlights(
-    streetlights: pd.DataFrame, boundaries: gpd.GeoDataFrame | None = None
+    streetlights: pd.DataFrame,
+    boundaries: gpd.GeoDataFrame | None = None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
-    """Assign WGS84 streetlight points to a district, retaining outside rows as NA.
+    """Assign streetlights to Seoul districts.
 
-    A point is assigned only when it is strictly within one polygon. Invalid or
-    unmatched coordinates remain unassigned and are reported; no fallback
-    district is fabricated.
+    1. Valid WGS84 coordinates are spatially joined to district polygons.
+    2. Unmatched valid points are assigned to the nearest district.
+    3. Invalid coordinates remain unassigned.
     """
+
     required = {"latitude", "longitude"}
     if missing := sorted(required - set(streetlights.columns)):
         raise BoundaryDataError(f"가로등 좌표 컬럼이 없습니다: {missing}")
-    boundary_gdf = boundaries if boundaries is not None else load_district_boundaries()
+
+    boundary_gdf = (
+        boundaries if boundaries is not None else load_district_boundaries()
+    )
     validate_district_boundaries(boundary_gdf)
+
     result = streetlights.copy()
-    result["district"] = pd.Series(pd.NA, index=result.index, dtype="string")
+    result["district"] = pd.Series(
+        pd.NA,
+        index=result.index,
+        dtype="string",
+    )
+
     latitude = pd.to_numeric(result["latitude"], errors="coerce")
     longitude = pd.to_numeric(result["longitude"], errors="coerce")
-    valid_wgs84 = latitude.between(37.0, 38.0) & longitude.between(126.0, 128.0)
+
+    valid_wgs84 = (
+        latitude.between(37.0, 38.0)
+        & longitude.between(126.0, 128.0)
+    )
+
+    # ---------------------------------------------------------
+    # 1. 정상 좌표를 GeoDataFrame으로 변환
+    # ---------------------------------------------------------
+
     points = gpd.GeoDataFrame(
         result.loc[valid_wgs84].copy(),
-        geometry=gpd.points_from_xy(longitude[valid_wgs84], latitude[valid_wgs84]),
+        geometry=gpd.points_from_xy(
+            longitude[valid_wgs84],
+            latitude[valid_wgs84],
+        ),
         crs=WGS84_CRS,
     ).to_crs(BOUNDARY_CRS)
+
+    # ---------------------------------------------------------
+    # 2. 먼저 정확한 polygon 내부 결합
+    # ---------------------------------------------------------
+
     joined = gpd.sjoin(
-        points, boundary_gdf[["district", "geometry"]], how="left", predicate="within"
+        points,
+        boundary_gdf[["district", "geometry"]],
+        how="left",
+        predicate="within",
     )
+
     if joined.index.duplicated().any():
-        raise BoundaryDataError("한 가로등이 둘 이상의 자치구에 결합되었습니다.")
-    result.loc[joined.index, "district"] = joined["district_right"].astype("string")
+        raise BoundaryDataError(
+            "한 가로등이 둘 이상의 자치구에 결합되었습니다."
+        )
+
+    result.loc[joined.index, "district"] = (
+        joined["district_right"].astype("string")
+    )
+
+    # ---------------------------------------------------------
+    # 3. 아직 배정되지 않은 정상 좌표
+    #    → 가장 가까운 자치구에 배정
+    # ---------------------------------------------------------
+
+    unmatched_mask = (
+        valid_wgs84
+        & result["district"].isna()
+    )
+
+    unmatched = points.loc[unmatched_mask]
+
+    nearest_count = 0
+
+    if not unmatched.empty:
+        nearest = gpd.sjoin_nearest(
+            unmatched,
+            boundary_gdf[["district", "geometry"]],
+            how="left",
+            distance_col="_distance_to_boundary",
+        )
+
+        if nearest.index.duplicated().any():
+            raise BoundaryDataError(
+                "가로등의 최근접 자치구 결합 결과가 중복되었습니다."
+            )
+
+        result.loc[nearest.index, "district"] = (
+            nearest["district_right"].astype("string")
+        )
+
+        nearest_count = len(nearest)
+
+    # ---------------------------------------------------------
+    # 4. 품질 보고서
+    # ---------------------------------------------------------
+
     assigned = int(result["district"].notna().sum())
+    invalid_count = int((~valid_wgs84).sum())
+
     report = {
         "streetlight_total_count": len(result),
         "streetlight_valid_wgs84_count": int(valid_wgs84.sum()),
-        "streetlight_invalid_coordinate_count": int((~valid_wgs84).sum()),
+        "streetlight_invalid_coordinate_count": invalid_count,
         "streetlight_spatial_join_assigned_count": assigned,
-        "streetlight_outside_boundary_count": int(valid_wgs84.sum()) - assigned,
-        "streetlight_unassigned_total_count": int(result["district"].isna().sum()),
+        "streetlight_initial_unmatched_count": int(unmatched_mask.sum()),
+        "streetlight_nearest_assigned_count": nearest_count,
+        "streetlight_unassigned_total_count": int(
+            result["district"].isna().sum()
+        ),
         "streetlight_assigned_district_sum": assigned,
     }
+
     return result, report
