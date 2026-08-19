@@ -10,9 +10,9 @@ import pandas as pd
 from config.settings import SEOUL_DISTRICTS
 
 RAW_DIR = Path("data/raw")
-CRIME_FILE = RAW_DIR / "5대_범죄_발생현황_20260819133035.csv"
-POPULATION_FILE = RAW_DIR / "등록인구(월별)_20260819133114.csv"
-STREETLIGHT_FILE = RAW_DIR / "서울시 가로등 위치 정보.csv"
+CRIME_FILE = RAW_DIR / "5대_범죄_발생현황_2024.csv"
+POPULATION_FILE = RAW_DIR / "등록인구_2024.csv"
+STREETLIGHT_FILE = RAW_DIR / "서울시_가로등_위치_2023.csv"
 
 
 class SourceDataError(ValueError):
@@ -69,19 +69,19 @@ def load_crime_data() -> pd.DataFrame:
 
 
 def load_population_data() -> pd.DataFrame:
-    """Load observed June 2026 district-summary rows and their total population."""
+    """Load 2024 registered population by district from the local source."""
     raw = _read_raw(POPULATION_FILE, "utf-8-sig")
     if raw.shape[0] < 4 or raw.shape[1] < 5:
         raise SourceDataError("등록인구 CSV의 다중 헤더 구조가 예상과 다릅니다.")
-    period, year = str(raw.iloc[0, 3]).strip(), int(str(raw.iloc[0, 3]).strip()[:4])
+    year = int(str(raw.iloc[0, 3]).strip()[:4])
     records = []
     for _, row in raw.iloc[3:].iterrows():
         district = normalize_district(row.iloc[1])
-        if district is not None and str(row.iloc[2]).strip() == "소계":
+        if district is not None:
             records.append(
                 {
                     "year": year,
-                    "period": period,
+                    "period": f"{year}년",
                     "district": district,
                     "population": pd.to_numeric(row.iloc[4], errors="coerce"),
                 }
@@ -120,13 +120,20 @@ def load_streetlight_data() -> pd.DataFrame:
 
 
 def quality_report(
-    crime: pd.DataFrame, population: pd.DataFrame, streetlights: pd.DataFrame
+    crime: pd.DataFrame,
+    population: pd.DataFrame,
+    streetlights: pd.DataFrame,
+    boundary_report: dict[str, Any] | None = None,
+    spatial_report: dict[str, Any] | None = None,
+    final_data: pd.DataFrame | None = None,
 ) -> dict[str, Any]:
     """Return explicit quality counts for display and tests; no rows are hidden."""
     valid = streetlights["latitude"].between(37.0, 38.0) & streetlights[
         "longitude"
     ].between(126.0, 128.0)
-    return {
+    report: dict[str, Any] = {
+        "crime_district_count": int(crime["district"].nunique()),
+        "crime_missing_districts": sorted(set(SEOUL_DISTRICTS) - set(crime["district"])),
         "crime_missing_count": int(crime["crime_count"].isna().sum()),
         "crime_negative_count": int((crime["crime_count"] < 0).sum()),
         "crime_unknown_districts": sorted(
@@ -137,6 +144,8 @@ def quality_report(
         "crime_duplicates": int(
             crime.duplicated(["year", "district", "crime_type"]).sum()
         ),
+        "population_district_count": int(population["district"].nunique()),
+        "population_missing_districts": sorted(set(SEOUL_DISTRICTS) - set(population["district"])),
         "population_missing": int(population["population"].isna().sum()),
         "population_nonpositive": int((population["population"] <= 0).sum()),
         "population_unknown_districts": sorted(
@@ -157,3 +166,21 @@ def quality_report(
         "crime_years": sorted(crime["year"].dropna().unique().tolist()),
         "population_years": sorted(population["year"].dropna().unique().tolist()),
     }
+    if boundary_report:
+        report.update(boundary_report)
+    if spatial_report:
+        report.update(spatial_report)
+    if final_data is not None:
+        report.update(
+            {
+                "final_district_count": int(final_data["district"].nunique()),
+                "final_missing_values": {
+                    column: int(final_data[column].isna().sum())
+                    for column in final_data.columns
+                },
+                "final_duplicate_districts": sorted(
+                    final_data.loc[final_data["district"].duplicated(), "district"].tolist()
+                ),
+            }
+        )
+    return report

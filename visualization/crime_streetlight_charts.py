@@ -12,13 +12,13 @@ from visualization.charts import apply_chart_theme
 def crime_rate_bar(data: pd.DataFrame):
     return apply_chart_theme(
         px.bar(
-            data.sort_values("crime_rate"),
-            x="crime_rate",
+            data.sort_values("crime_rate_per_10000"),
+            x="crime_rate_per_10000",
             y="district",
             orientation="h",
-            color="crime_rate",
+            color="crime_rate_per_10000",
             color_continuous_scale="Reds",
-            labels={"crime_rate": "인구 1만 명당 범죄 발생 건수", "district": "자치구"},
+            labels={"crime_rate_per_10000": "인구 1만 명당 범죄 발생 건수", "district": "자치구"},
         ),
         "자치구별 범죄율",
         "인구 1만 명당 범죄 발생 건수",
@@ -77,7 +77,14 @@ def streetlight_map(data: pd.DataFrame, limit: int = 5000) -> folium.Map:
             color="#F59E0B",
             fill=True,
             fill_opacity=0.6,
-            tooltip=str(row.facility_id),
+            popup=folium.Popup(
+                f"<div style='font-size:14px; line-height:1.5; color:#102A43;'><b>자치구</b>: {str(row.district) if pd.notna(row.district) else '미배정'}<br><b>관리번호</b>: {row.facility_id}</div>",
+                max_width=260,
+            ),
+            tooltip=folium.Tooltip(
+                f"{str(row.district) if pd.notna(row.district) else '미배정'} · {row.facility_id}",
+                style="font-size:14px; font-weight:600; color:#102A43; background:#FFFFFF; border:1px solid #1479B8;",
+            ),
         ).add_to(m)
     return m
 
@@ -86,12 +93,12 @@ def risk_scatter(data: pd.DataFrame):
     return px.scatter(
         data,
         x="streetlights_per_1000_people",
-        y="crime_rate",
+        y="crime_rate_per_10000",
         text="district",
         color="quadrant",
-        hover_data=["crime_count", "population", "streetlight_count"],
+        hover_data=["crime_count_2024", "population_2024", "streetlight_count_2023"],
         labels={
             "streetlights_per_1000_people": "인구 1,000명당 가로등 수",
-            "crime_rate": "인구 1만 명당 범죄 발생 건수",
+            "crime_rate_per_10000": "인구 1만 명당 범죄 발생 건수",
         },
     )

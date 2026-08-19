@@ -9,6 +9,11 @@ from utils.crime_streetlight_loader import (
     load_streetlight_data,
     quality_report,
 )
+from utils.district_boundary_loader import (
+    load_district_boundaries,
+    spatial_join_streetlights,
+    validate_district_boundaries,
+)
 
 st.set_page_config(page_title="서울 범죄율·가로등 분석", page_icon="💡", layout="wide")
 
@@ -23,24 +28,24 @@ def main() -> None:
         load_population_data(),
         load_streetlight_data(),
     )
-    report = quality_report(crime, population, lights)
-    comparison, reason = build_comparison_dataset(crime, population, lights)
+    boundaries = load_district_boundaries()
+    joined_lights, spatial_report = spatial_join_streetlights(lights, boundaries)
+    comparison, reason = build_comparison_dataset(crime, population, joined_lights)
+    report = quality_report(crime, population, joined_lights, validate_district_boundaries(boundaries), spatial_report, comparison)
     c1, c2, c3 = st.columns(3)
     c1.metric(
         "2024년 서울 5대 범죄 발생",
         f"{int(crime.loc[crime['crime_type'] == '소계', 'crime_count'].sum()):,}건",
     )
-    c2.metric("2026년 6월 등록인구", f"{int(population['population'].sum()):,}명")
+    c2.metric("2024년 등록인구", f"{int(population['population'].sum()):,}명")
     c3.metric("가로등 위치 레코드", f"{len(lights):,}개")
     st.subheader("데이터 출처")
     st.write(
-        "- 범죄: `5대_범죄_발생현황_20260819133035.csv` (2024년, 자치구별 발생/검거)\n- 인구: `등록인구(월별)_20260819133114.csv` (2026년 6월 등록인구)\n- 가로등: `서울시 가로등 위치 정보.csv` (관리번호·위도·경도)"
+        "- 범죄: `5대_범죄_발생현황_2024.csv` (2024년, 자치구별 발생/검거)\n- 인구: `등록인구_2024.csv` (2024년 등록인구)\n- 가로등: `서울시_가로등_위치_2023.csv` (WGS84 위도·경도)\n- 경계: `data/reference/서울시 상권분석서비스(영역-자치구).shp` (EPSG:5181)"
     )
     if reason:
         st.warning(reason)
-        st.info(
-            "가로등 원본에 자치구 또는 주소가 제공되고 2024년 인구 기준 데이터가 확보되면 자치구 비교·범죄율·4분면 분석이 활성화됩니다."
-        )
+        st.info("원본 데이터와 공간결합 결과를 확인하세요.")
     else:
         st.success(f"{len(comparison)}개 자치구 비교 데이터를 생성했습니다.")
     with st.expander("데이터 품질 검증 결과"):

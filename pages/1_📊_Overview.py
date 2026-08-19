@@ -77,7 +77,7 @@ def main() -> None:
     left, right = st.columns([1.2, 1])
     with left:
         render_section_title("🏙️ 자치구별 범죄 발생 건수")
-        st.plotly_chart(crime_count_bar(totals), use_container_width=True)
+        st.plotly_chart(crime_count_bar(totals), width="stretch")
     with right:
         render_section_title("🍩 범죄 유형별 발생 비중")
         type_counts = (
@@ -85,7 +85,7 @@ def main() -> None:
             .groupby("crime_type", as_index=False)["crime_count"]
             .sum()
         )
-        st.plotly_chart(crime_type_pie(type_counts), use_container_width=True)
+        st.plotly_chart(crime_type_pie(type_counts), width="stretch")
 
     st.markdown("<br>", unsafe_allow_html=True)
     render_section_title("🌡️ 자치구 × 범죄 유형 분포 Heatmap")
@@ -93,7 +93,7 @@ def main() -> None:
     if heatmap_data.empty:
         render_empty_state("범죄 유형별 발생 데이터를 표시할 수 없습니다.")
     else:
-        st.plotly_chart(crime_heatmap(heatmap_data), use_container_width=True)
+        st.plotly_chart(crime_heatmap(heatmap_data), width="stretch")
 
     render_section_title("📋 자치구별 범죄 집계표")
     render_result_table(

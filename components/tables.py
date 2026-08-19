@@ -2,16 +2,16 @@
 SEOUL SECURITY INFRASTRUCTURE INSIGHT - Table Component
 """
 
-from typing import Optional, List
+
 import pandas as pd
 import streamlit as st
 
 
 def render_result_table(
     df: pd.DataFrame,
-    columns: Optional[List[str]] = None,
-    title: Optional[str] = None,
-    height: Optional[int] = None,
+    columns: list[str] | None = None,
+    title: str | None = None,
+    height: int | None = None,
 ) -> None:
     """분석 결과 DataFrame을 깔끔하게 테이블 형태로 렌더링
 
@@ -42,14 +42,13 @@ def render_result_table(
             raise ValueError(f"유효하지 않은 height 값입니다: {height}. 양의 정수이어야 합니다.")
         st.dataframe(
             display_df,
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
             height=height,
         )
     else:
         st.dataframe(
             display_df,
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
         )
-

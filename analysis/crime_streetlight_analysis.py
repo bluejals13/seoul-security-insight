@@ -22,7 +22,7 @@ def calculate_crime_rates(
 def build_comparison_dataset(
     crime: pd.DataFrame, population: pd.DataFrame, streetlights: pd.DataFrame
 ) -> tuple[pd.DataFrame, str | None]:
-    """Build comparison only when both temporal and spatial keys exist."""
+    """Build the 2024/2023 comparison after a spatial district assignment."""
     common_years = set(crime["year"].unique()) & set(population["year"].unique())
     if not common_years:
         return (
@@ -41,11 +41,27 @@ def build_comparison_dataset(
         .size()
         .rename(columns={"size": "streetlight_count"})
     )
-    result = totals.merge(lights, on="district", how="inner")
-    result["streetlights_per_1000_people"] = (
-        result["streetlight_count"] / result["population"] * 1_000
-    )
-    return result, None
+    result = totals.merge(lights, on="district", how="left").fillna({"streetlight_count": 0})
+    result["streetlight_count"] = result["streetlight_count"].astype("int64")
+    result["streetlights_per_1000_people"] = result["streetlight_count"] / result["population"] * 1_000
+    final = result.rename(
+        columns={
+            "crime_count": "crime_count_2024",
+            "population": "population_2024",
+            "crime_rate": "crime_rate_per_10000",
+            "streetlight_count": "streetlight_count_2023",
+        }
+    )[
+        [
+            "district",
+            "crime_count_2024",
+            "population_2024",
+            "crime_rate_per_10000",
+            "streetlight_count_2023",
+            "streetlights_per_1000_people",
+        ]
+    ].sort_values("district").reset_index(drop=True)
+    return final, None
 
 
 def classify_quadrants(
@@ -54,11 +70,11 @@ def classify_quadrants(
     """Classify rates/densities using data-derived mean or median cutoffs."""
     agg = "mean" if basis == "평균" else "median"
     rate_cutoff, light_cutoff = (
-        float(getattr(data["crime_rate"], agg)()),
+        float(getattr(data["crime_rate_per_10000"], agg)()),
         float(getattr(data["streetlights_per_1000_people"], agg)()),
     )
     result = data.copy()
-    high_rate = result["crime_rate"] >= rate_cutoff
+    high_rate = result["crime_rate_per_10000"] >= rate_cutoff
     high_light = result["streetlights_per_1000_people"] >= light_cutoff
     result["quadrant"] = "🟡 낮은 범죄율 + 낮은 가로등 밀도"
     result.loc[high_rate & ~high_light, "quadrant"] = (
