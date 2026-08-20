@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서울은 어디가 더 안전한가? - 팩트체크 발표자료</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Mermaid CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: 'Pretendard', sans-serif; background-color: #0f172a; color: #f8fafc; overflow: hidden; }
+        
+        .slide-stage {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .slide-card {
+            aspect-ratio: 16 / 9;
+            width: min(100vw, 177.78vh);
+            height: min(100vh, 56.25vw);
+            background: #1e293b;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.5rem;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        .slide-card.active { display: flex; }
+        
+        .badge-fact { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-interp { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .badge-limit { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+        .speaker-note-drawer {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 2px solid #3b82f6;
+            backdrop-filter: blur(8px);
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(100%);
+            z-index: 40;
+            padding: 1.25rem 2rem;
+        }
+        .speaker-note-drawer.open { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="slide-stage">
+
+        <!-- SLIDE 01: TITLE -->
+        <div class="slide-card active" id="slide-1">
+            <div class="flex items-center justify-between">
+                <span class="badge-fact text-xs px-3 py-1 rounded-full font-semibold">SEOUL SECURITY INSIGHT</span>
+                <span class="text-xs text-slate-400">최종 동기화 검증 완료</span>
+            </div>
+            <div class="my-auto text-center max-w-4xl mx-auto space-y-5">
+                <div class="inline-flex p-3 bg-blue-600/10 rounded-2xl border border-blue-500/20 mb-1">
+                    <i data-lucide="shield-check" class="w-10 h-10 text-blue-400"></i>
+                </div>
+                <h1 class="text-4xl font-black tracking-tight text-white leading-tight">
+                    서울은 어디가 더 안전한가?
+                </h1>
+                <p class="text-lg text-slate-300 font-light">
+                    데이터 기반 팩트, 통계 분석, 그리고 객관적 한계의 구별
+                </p>
+                <div class="pt-2 flex items-center justify-center space-x-4 text-xs text-slate-400">
+                    <span class="badge-fact px-2.5 py-1 rounded">[FACT] 2024년 5대 범죄 80,819건 전수</span>
+                    <span class="badge-interp px-2.5 py-1 rounded">[INTERPRETATION] 인구 보정 상관성</span>
+                    <span class="badge-limit px-2.5 py-1 rounded">[LIMITATION] 인과관계 명시적 제외</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>데이터 기반 객관적 연구 보고서</span>
+                <span>01 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 2024년 5대 범죄 80,819건 및 2023년 가로등 19,291개 데이터 분석.\n[INTERPRETATION] 인구 보정 지표 및 상관성 분석 제공.\n[LIMITATION] 본 발표는 통계적 상관관계 관찰일 뿐 인과관계를 주장하지 않습니다."></div>
+        </div>
+
+        <!-- SLIDE 02: PROBLEM -->
+        <div class="slide-card" id="slide-2">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">02. PROBLEM STATEMENT</span>
+                <span class="text-xs text-slate-400">질문의 재정의</span>
+            </div>
+            <div class="my-auto space-y-6 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-extrabold text-white text-center leading-snug">
+                    "범죄 발생 건수가 많다고<br/>정말 더 위험한 지역일까?"
+                </h2>
+                <div class="grid grid-cols-3 gap-4 pt-2">
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold mb-2 inline-block">[FACT]</span>
+                        <h3 class="font-bold text-sm text-white mt-1">강남구 1위 (6,107건)</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            2024년 5대 범죄 절대 발생건수는 강남구가 서울 25개 자치구 중 가장 많습니다.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-interp text-xs px-2 py-0.5 rounded font-bold mb-2 inline-block">[INTERPRETATION]</span>
+                        <h3 class="font-bold text-sm text-white mt-1">단순 건수의 한계</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            절대 건수만으로 치안 위험도를 단정하는 것은 지역 인구 규모를 고려하지 않은 단순 합산의 한계가 존재합니다.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-limit text-xs px-2 py-0.5 rounded font-bold mb-2 inline-block">[LIMITATION]</span>
+                        <h3 class="font-bold text-sm text-white mt-1">추가 보정의 필요성</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            상주인구 및 유동인구 보정 없이는 지역별 실질 치안 상태를 판단할 수 없습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Problem Statement</span>
+                <span>02 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 강남구가 절대 범죄 발생건수 1위(6,107건)입니다.\n[INTERPRETATION] 절대 건수만으로 치안 위험도를 단정하는 데 한계가 있습니다.\n[LIMITATION] 상주인구 및 유동인구 보정 데이터 검토가 필요합니다."></div>
+        </div>
+
+        <!-- SLIDE 03: DATA -->
+        <div class="slide-card" id="slide-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">03. DATA SOURCES</span>
+                <span class="text-xs text-slate-400">데이터 구조 및 시차</span>
+            </div>
+            <div class="my-auto space-y-5">
+                <h2 class="text-2xl font-bold text-white">활용 데이터셋 및 검증 현황</h2>
+                <div class="grid grid-cols-3 gap-5">
+                    <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                        <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold">5대 범죄 (2024)</span>
+                        <p class="text-2xl font-black text-blue-400 my-2">80,819 건</p>
+                        <p class="text-xs text-slate-400">경찰청 / 서울시 공공데이터</p>
+                    </div>
+                    <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                        <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold">주민등록 인구 (2024)</span>
+                        <p class="text-2xl font-black text-indigo-400 my-2">4,482,063 명</p>
+                        <p class="text-xs text-slate-400">행정안전부 주민등록 통계</p>
+                    </div>
+                    <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                        <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold">가로등 수 (2023)</span>
+                        <p class="text-2xl font-black text-amber-400 my-2">19,291 개</p>
+                        <p class="text-xs text-slate-400">서울시 스마트도시데이터</p>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs text-slate-300">
+                    <span class="badge-limit font-bold px-2 py-0.5 rounded mr-2">[LIMITATION]</span>
+                    가로등(2023년)과 범죄/인구(2024년) 데이터 간 1년의 시차가 존재하므로 시점 간 직접적 영향으로 해석하지 않습니다.
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Data Sources</span>
+                <span>03 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 범죄 80,819건, 인구 4,482,063명, 가로등 19,291개 데이터를 결합했습니다.\n[LIMITATION] 가로등(2023)과 범죄(2024) 데이터 간 1년의 시차가 존재함을 명시합니다."></div>
+        </div>
+
+        <!-- SLIDE 04: OVERVIEW -->
+        <div class="slide-card" id="slide-4">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">04. CRIME OVERVIEW</span>
+                <span class="text-xs text-slate-400">서울 범죄 구성 팩트</span>
+            </div>
+            <div class="my-auto grid grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-white">서울 5대 범죄의 92.9%는<br/><span class="text-indigo-400">폭력과 절도</span>입니다</h2>
+                    <div class="space-y-2 text-xs">
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700 flex justify-between">
+                            <span><strong class="text-rose-400">[FACT] 폭력:</strong> 39,554건 (48.9%)</span>
+                            <span><strong class="text-amber-400">[FACT] 절도:</strong> 35,506건 (43.9%)</span>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700 flex justify-between">
+                            <span><strong class="text-purple-400">[FACT] 성범죄:</strong> 5,523건 (6.8%)</span>
+                            <span><strong class="text-emerald-400">[FACT] 살인/강도:</strong> 236건 (0.29%)</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        <span class="badge-interp font-bold px-1.5 py-0.5 rounded mr-1">[INTERPRETATION]</span>
+                        서울시 5대 범죄의 대다수(75,060건, 92.9%)는 폭력(48.9%)과 절도(43.9%) 유형에 집중되어 있습니다.
+                    </p>
+                </div>
+                <div class="h-60 flex items-center justify-center bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                    <canvas id="slidePieChart"></canvas>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Crime Overview</span>
+                <span>04 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 폭력 39,554건(48.9%), 절도 35,506건(43.9%)으로 두 유형이 75,060건(92.9%)을 차지합니다.\n[INTERPRETATION] 5대 범죄 발생의 대다수는 폭력과 절도에 집중되어 있습니다."></div>
+        </div>
+
+        <!-- SLIDE 05: INSIGHT 01 -->
+        <div class="slide-card" id="slide-5">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">05. KEY INSIGHT 01</span>
+                <span class="text-xs text-slate-400">범죄 절대건수 vs 인구 대비 비율</span>
+            </div>
+            <div class="my-auto space-y-4">
+                <h2 class="text-xl font-bold text-white">절대 건수 1위(강남구)와 인구 1만명당 범죄율 1위(중구) 비교</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold">[FACT] 통계 측정값</span>
+                        <ul class="text-xs text-slate-300 mt-2 space-y-1">
+                            <li>• 강남구 절대 1위: <strong>6,107건</strong></li>
+                            <li>• 중구 1만명당 1위: <strong>454.65건</strong></li>
+                            <li>• 종로구 1만명당 2위: <strong>383.14건</strong></li>
+                            <li>• Pearson r: <strong>0.186</strong> / Spearman ρ: <strong>0.418</strong></li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-interp text-xs px-2 py-0.5 rounded font-bold">[INTERPRETATION] 해석 가능성</span>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            중구와 종로구는 상주인구(6~7만 명) 대비 주간 유동인구가 많아 상주인구 분모 보정 시 범죄율 수치가 크게 산정되는 특성을 보입니다.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-limit text-xs px-2 py-0.5 rounded font-bold">[LIMITATION] 데이터 한계</span>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            본 데이터셋에는 유동인구 데이터가 포함되어 있지 않으므로, 수치가 높게 나온 이유가 유동인구 때문이라고 단정할 수 없으며 추가 데이터 검증이 필요합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Key Insight 01</span>
+                <span>05 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 강남구 절대 6,107건 vs 중구 1만명당 454.65건입니다. Spearman rho=0.418입니다.\n[INTERPRETATION] 도심 지역 상주인구 분모 보정 시 수치가 상승합니다.\n[LIMITATION] 유동인구 데이터가 포함되어 있지 않아 직접적 원인 판단은 불가합니다."></div>
+        </div>
+
+        <!-- SLIDE 06: INSIGHT 02 -->
+        <div class="slide-card" id="slide-6">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">06. KEY INSIGHT 02</span>
+                <span class="text-xs text-slate-400">범죄 유형별 구성비 차이</span>
+            </div>
+            <div class="my-auto space-y-4">
+                <h2 class="text-xl font-bold text-white">자치구별 범죄 유형 분포의 차이</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold">[FACT] 관찰 데이터</span>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            • 강남·중구·서초: 절도 발생 비율 상대적 우세<br/>
+                            • 관악·강서·영등포: 폭력 발생 비율 상대적 우세
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-interp text-xs px-2 py-0.5 rounded font-bold">[INTERPRETATION] 합리적 해석</span>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            상점 및 매장 밀집지역과 1인가구/상권 지역의 사회적 환경 특성에 따라 자주 발생하는 범죄 유형에 차이가 존재할 가능성이 있습니다.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <span class="badge-limit text-xs px-2 py-0.5 rounded font-bold">[LIMITATION] 원인 미확정</span>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            상업지구가 범죄 유형을 직접 결정한다는 인과관계는 본 데이터만으로 입증할 수 없습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Key Insight 02</span>
+                <span>06 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 강남/중구는 절도 비중이, 관악/영등포는 폭력 비중이 상대적으로 높습니다.\n[INTERPRETATION] 지역 환경에 따라 범죄 유형에 차이가 존재할 가능성이 있습니다.\n[LIMITATION] 인과관계를 의미하지는 않습니다."></div>
+        </div>
+
+        <!-- SLIDE 07: INSIGHT 03 -->
+        <div class="slide-card" id="slide-7">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">07. KEY INSIGHT 03</span>
+                <span class="text-xs text-slate-400">가로등 수 vs 범죄 분석</span>
+            </div>
+            <div class="my-auto grid grid-cols-2 gap-6 items-center">
+                <div class="space-y-3">
+                    <h2 class="text-xl font-bold text-white">가로등 수와 범죄 발생량의 상관관계</h2>
+                    <div class="bg-slate-800 p-3 rounded text-xs space-y-1">
+                        <p><span class="badge-fact font-bold px-1.5 py-0.5 rounded mr-1">[FACT]</span> 가로등 수 vs 범죄 건수: <strong>Pearson r = 0.561, Spearman ρ = 0.523</strong> (양의 상관관계)</p>
+                        <p><span class="badge-fact font-bold px-1.5 py-0.5 rounded mr-1">[FACT]</span> 1만명당 가로등 vs 1만명당 범죄: <strong>Pearson r = 0.120, Spearman ρ = 0.287</strong> (상관성 낮음)</p>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        <span class="badge-interp font-bold px-1.5 py-0.5 rounded mr-1">[INTERPRETATION]</span>
+                        인구 및 도시 규모가 큰 자치구에 가로등 수와 범죄 발생 절대량이 모두 많은 경향을 보이나, 인구 보정 시 상관성은 거의 관찰되지 않습니다.
+                    </p>
+                    <div class="bg-rose-500/10 p-2.5 rounded border border-rose-500/20 text-xs text-rose-300">
+                        <span class="badge-limit font-bold px-1.5 py-0.5 rounded mr-1">[LIMITATION]</span>
+                        <strong>회귀선은 통계적 경향성을 나타내는 시각화 자료일 뿐, 결코 인과관계를 의미하지 않습니다.</strong>
+                    </div>
+                </div>
+                <div class="h-64 bg-slate-800/50 p-3 rounded-xl border border-slate-700">
+                    <canvas id="slideScatterChart"></canvas>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Key Insight 03</span>
+                <span>07 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 가로등과 범죄 건수의 Pearson r=0.561, Spearman rho=0.523 이며 1만명당 상관계수는 r=0.120입니다.\n[LIMITATION] 회귀선은 인과관계를 의미하지 않음을 명시합니다."></div>
+        </div>
+
+        <!-- SLIDE 08: DEEP DIVE -->
+        <div class="slide-card" id="slide-8">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">08. DISTRICT DEEP DIVE</span>
+                <span class="text-xs text-slate-400">특징적 수치 및 이상치</span>
+            </div>
+            <div class="my-auto grid grid-cols-3 gap-4">
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+                    <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold">도심 수치 높음</span>
+                    <h3 class="font-bold text-white text-base">중구 · 종로구</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        [FACT] 인구 1만 명당 범죄율 각각 454.65건, 383.14건으로 계산됨.<br/>
+                        [LIMITATION] 유동인구 데이터 부재로 원인 미확정.
+                    </p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+                    <span class="badge-fact text-xs px-2 py-0.5 rounded font-bold">상대적 수치 낮음</span>
+                    <h3 class="font-bold text-white text-base">도봉구 · 성북구</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        [FACT] 인구 1만 명당 범죄율 각각 146.32건, 131.62건으로 서울시 하위권 관찰.
+                    </p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+                    <span class="badge-limit text-xs px-2 py-0.5 rounded font-bold">이상치 확인</span>
+                    <h3 class="font-bold text-white text-base">중랑구 가로등 0건</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        [FACT / LIMITATION] 0개로 보고되었으나 실제 0개인지 데이터만으로 확인할 수 없으며 공공데이터 수집 누락 가능성이 존재함. 임의 보정 없이 원본 표기.
+                    </p>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>District Deep Dive</span>
+                <span>08 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[FACT] 중구/종로구는 상주인구 대비 비율이 높고 도봉구/성북구는 낮습니다. 중랑구 가로등은 0개로 보고되었습니다.\n[LIMITATION] 중랑구 0건은 공공데이터 누락 가능성이 있으며 임의 보정하지 않습니다."></div>
+        </div>
+
+        <!-- SLIDE 09: LIMITATIONS -->
+        <div class="slide-card" id="slide-9">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-rose-400 uppercase tracking-widest">09. LIMITATIONS</span>
+                <span class="text-xs text-slate-400">데이터 한계 재정리</span>
+            </div>
+            <div class="my-auto space-y-4">
+                <h2 class="text-xl font-bold text-white">현재 데이터만으로 알 수 없는 내용</h2>
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <h4 class="font-bold text-rose-400 mb-1">1. 유동인구 원인 단정 불가</h4>
+                        <p class="text-slate-300">유동인구 데이터가 없어 도심 자치구의 범죄율 원인을 유동인구 때문이라고 확정할 수 없음.</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <h4 class="font-bold text-rose-400 mb-1">2. 인과관계 해석 불가</h4>
+                        <p class="text-slate-300">가로등과 범죄 간 상관관계 및 회귀선은 통계적 경향일 뿐 인과관계를 의미하지 않음.</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <h4 class="font-bold text-rose-400 mb-1">3. 데이터 시점 시차</h4>
+                        <p class="text-slate-300">가로등(2023년)과 범죄/인구(2024년) 간 1년의 시차가 존재함.</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <h4 class="font-bold text-rose-400 mb-1">4. 이상치 실제여부 불명확</h4>
+                        <p class="text-slate-300">중랑구 가로등 0건은 실제 0개인지 데이터만으로 판단할 수 없음.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Limitations</span>
+                <span>09 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[LIMITATION] 유동인구 원인 미확정, 인과관계 해석 불가, 1년 시차, 이상치 판단 불가가 핵심 한계입니다."></div>
+        </div>
+
+        <!-- SLIDE 10: CONCLUSION -->
+        <div class="slide-card" id="slide-10">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">10. CONCLUSION</span>
+                <span class="text-xs text-slate-400">결론 및 향후 과제</span>
+            </div>
+            <div class="my-auto space-y-5 max-w-4xl mx-auto">
+                <h2 class="text-2xl font-extrabold text-white text-center">
+                    서울의 생활안전을 바라보는 객관적 시각
+                </h2>
+                <div class="grid grid-cols-3 gap-4 pt-2">
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 text-center">
+                        <span class="badge-interp text-xs px-2 py-0.5 rounded font-bold mb-2 inline-block">[INTERPRETATION]</span>
+                        <h3 class="font-bold text-white text-sm">유동인구 데이터 통합 필요</h3>
+                        <p class="text-xs text-slate-300 mt-2">상주인구 분모 한계를 극복하기 위한 생활인구/유동인구 연계 검증</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 text-center">
+                        <span class="badge-interp text-xs px-2 py-0.5 rounded font-bold mb-2 inline-block">[INTERPRETATION]</span>
+                        <h3 class="font-bold text-white text-sm">유형별 치안 환경 검토</h3>
+                        <p class="text-xs text-slate-300 mt-2">폭력 및 절도 등 범죄 유형 특성에 맞는 다각적 환경 조사 필요</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 text-center">
+                        <span class="badge-limit text-xs px-2 py-0.5 rounded font-bold mb-2 inline-block">[LIMITATION]</span>
+                        <h3 class="font-bold text-white text-sm">인과적 현장 검증 필요</h3>
+                        <p class="text-xs text-slate-300 mt-2">통계적 상관성을 넘어선 정밀 CPTED 및 치안 현장 수집 요구</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Conclusion</span>
+                <span>10 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="[INTERPRETATION] 유동인구 데이터 연계 및 유형별 다각적 조사가 필요합니다.\n[LIMITATION] 정밀 현장 검증이 병행되어야 합니다."></div>
+        </div>
+
+        <!-- SLIDE 11: APPENDIX -->
+        <div class="slide-card" id="slide-11">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">11. APPENDIX & QA</span>
+                <span class="text-xs text-slate-400">데이터 흐름도 및 Q&A</span>
+            </div>
+            <div class="my-auto space-y-4">
+                <h2 class="text-xl font-bold text-white">데이터 처리 구조도 (Mermaid) 및 Q&A</h2>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs overflow-x-auto">
+                    <pre class="mermaid text-slate-300">
+flowchart LR
+    RawData["Raw CSVs (범죄, 인구, 가로등)"] --> Preprocess["01_data_audit & 02_cleaning"]
+    Preprocess --> Factcheck["03_analysis (Pearson & Spearman)"]
+    Factcheck --> Outputs["Dashboard & Presentation HTML/PPTX"]
+                    </pre>
+                </div>
+                <p class="text-center text-slate-300 text-sm font-semibold pt-2">질의응답(Q&A) 시간을 갖겠습니다. 경청해 주셔서 감사합니다.</p>
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-3">
+                <span>Appendix & QA</span>
+                <span>11 / 11</span>
+            </div>
+            <div class="speaker-note" data-note="모든 수치와 통계 검증 분석은 공개 파이프라인으로 구성되어 있습니다. 질문을 받겠습니다."></div>
+        </div>
+
+    </div>
+
+    <!-- CONTROLS & SPEAKER NOTE DRAWER -->
+    <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 px-6 py-3 rounded-full flex items-center space-x-6 z-50 text-xs shadow-2xl">
+        <button onclick="prevSlide()" class="hover:text-blue-400 flex items-center space-x-1"><i data-lucide="chevron-left" class="w-4 h-4"></i><span>이전</span></button>
+        <span id="slideIndicator" class="font-mono text-slate-300 font-bold">01 / 11</span>
+        <button onclick="nextSlide()" class="hover:text-blue-400 flex items-center space-x-1"><span>다음</span><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+        <div class="h-4 w-px bg-slate-700"></div>
+        <button onclick="toggleNote()" class="text-amber-400 hover:text-amber-300 flex items-center space-x-1"><i data-lucide="mic" class="w-4 h-4"></i><span>발표자 노트 (Speaker Note)</span></button>
+    </div>
+
+    <!-- SPEAKER NOTE DRAWER CONTENT -->
+    <div id="noteDrawer" class="speaker-note-drawer">
+        <div class="max-w-4xl mx-auto space-y-2">
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center"><i data-lucide="mic" class="w-4 h-4 mr-1"></i> Speaker Script (FACT / INTERPRETATION / LIMITATION)</span>
+                <button onclick="toggleNote()" class="text-xs text-slate-400 hover:text-white">닫기 (Esc)</button>
+            </div>
+            <p id="noteText" class="text-sm text-slate-200 leading-relaxed font-light whitespace-pre-line"></p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+
+        let currentSlide = 1;
+        const totalSlides = 11;
+
+        function showSlide(n) {
+            document.querySelectorAll('.slide-card').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(`slide-${n}`);
+            if (target) {
+                target.classList.add('active');
+                document.getElementById('slideIndicator').textContent = `${String(n).padStart(2, '0')} / ${totalSlides}`;
+                
+                const note = target.querySelector('.speaker-note')?.getAttribute('data-note') || '';
+                document.getElementById('noteText').textContent = note;
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) { currentSlide++; showSlide(currentSlide); }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) { currentSlide--; showSlide(currentSlide); }
+        }
+
+        function toggleNote() {
+            document.getElementById('noteDrawer').classList.toggle('open');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'Escape') document.getElementById('noteDrawer').classList.remove('open');
+        });
+
+        // Initialize Charts
+        window.onload = function() {
+            showSlide(1);
+            
+            // Pie Chart
+            const ctxPie = document.getElementById('slidePieChart').getContext('2d');
+            new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['폭력 (39,554건, 48.9%)', '절도 (35,506건, 43.9%)', '성범죄 (5,523건, 6.8%)', '살인/강도 (236건, 0.29%)'],
+                    datasets: [{ data: [39554, 35506, 5523, 236], backgroundColor: ['#ef4444', '#f59e0b', '#8b5cf6', '#10b981'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 10 } } } } }
+            });
+
+            // Scatter Chart
+            const rawScatterData = [
+                {x: 3588, y: 6107, d: '강남'}, {x: 1107, y: 3322, d: '강동'}, {x: 837, y: 2614, d: '강북'}, {x: 1041, y: 4008, d: '강서'},
+                {x: 2247, y: 4485, d: '관악'}, {x: 1335, y: 2870, d: '광진'}, {x: 1290, y: 3687, d: '구로'}, {x: 848, y: 2786, d: '금천'},
+                {x: 987, y: 3390, d: '노원'}, {x: 476, y: 2117, d: '도봉'}, {x: 1077, y: 3216, d: '동대문'}, {x: 1306, y: 2760, d: '동작'},
+                {x: 1289, y: 3720, d: '마포'}, {x: 1095, y: 2450, d: '서대문'}, {x: 2228, y: 3788, d: '서초'}, {x: 901, y: 2010, d: '성동'},
+                {x: 1098, y: 2600, d: '성북'}, {x: 3446, y: 5174, d: '송파'}, {x: 1073, y: 2890, d: '양천'}, {x: 1702, y: 4167, d: '영등포'},
+                {x: 1511, y: 3322, d: '용산'}, {x: 1164, y: 3280, d: '은평'}, {x: 1879, y: 2765, d: '종로'}, {x: 1141, y: 2955, d: '중구'},
+                {x: 0, y: 3120, d: '중랑'}
+            ];
+
+            const ctxScatter = document.getElementById('slideScatterChart').getContext('2d');
+            new Chart(ctxScatter, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: '자치구 데이터점',
+                            data: rawScatterData,
+                            backgroundColor: '#3b82f6',
+                            pointRadius: 5
+                        },
+                        {
+                            type: 'line',
+                            label: '추세선 (y = 0.8415x + 2583.4)',
+                            data: [{x: 0, y: 2583.4}, {x: 3600, y: 5612.8}],
+                            borderColor: '#ef4444',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: '가로등 수 (2023)', color: '#94a3b8', font: { size: 10 } }, ticks: { color: '#94a3b8' } },
+                        y: { title: { display: true, text: '5대 범죄 발생 건수 (2024)', color: '#94a3b8', font: { size: 10 } }, ticks: { color: '#94a3b8' } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#cbd5e1', font: { size: 9 } } },
+                        tooltip: { callbacks: { label: (c) => `${c.raw.d || ''}: 가로등 ${c.raw.x}개, 범죄 ${c.raw.y}건` } }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>

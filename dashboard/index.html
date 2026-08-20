@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서울시 생활안전 데이터 대시보드 (Seoul Security Insight)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen pb-12">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-blue-600 rounded-lg">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">서울시 생활안전 데이터 대시보드</h1>
+                    <p class="text-xs text-slate-400">Seoul Security & Infrastructure Insight System</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 text-xs text-slate-300">
+                <span class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">기준연도: 범죄·인구 2024년 / 가로등 2023년</span>
+                <span class="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-500/20 font-medium">검증완료 데이터</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+
+        <!-- SECTION 1: KEY KPI CARDS -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="card p-5 border-l-4 border-l-blue-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">2024 총 5대 범죄 발생</p>
+                        <h3 class="text-2xl font-black text-slate-900 mt-1">80,819 <span class="text-sm font-normal text-slate-500">건</span></h3>
+                    </div>
+                    <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">25개 자치구 전체 합계</p>
+            </div>
+
+            <div class="card p-5 border-l-4 border-l-indigo-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">인구 1만명당 범죄율</p>
+                        <h3 class="text-2xl font-black text-slate-900 mt-1">180.32 <span class="text-sm font-normal text-slate-500">건</span></h3>
+                    </div>
+                    <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><i data-lucide="users" class="w-5 h-5"></i></div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">서울시 평균 상주인구 대비</p>
+            </div>
+
+            <div class="card p-5 border-l-4 border-l-amber-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">가로등 설치 총수</p>
+                        <h3 class="text-2xl font-black text-slate-900 mt-1">19,291 <span class="text-sm font-normal text-slate-500">개</span></h3>
+                    </div>
+                    <div class="p-2 bg-amber-50 text-amber-600 rounded-lg"><i data-lucide="lightbulb" class="w-5 h-5"></i></div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">2023년 관리 가로등 수</p>
+            </div>
+
+            <div class="card p-5 border-l-4 border-l-emerald-600">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">서울시 주민등록 인구</p>
+                        <h3 class="text-2xl font-black text-slate-900 mt-1">4,482,063 <span class="text-sm font-normal text-slate-500">명</span></h3>
+                    </div>
+                    <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">2024년 25개 자치구 총계</p>
+            </div>
+        </section>
+
+        <!-- CONTROLS & FILTERS -->
+        <section class="card p-4 flex flex-wrap items-center justify-between gap-4 bg-white">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="sliders" class="w-5 h-5 text-slate-500"></i>
+                <span class="text-sm font-semibold text-slate-700">데이터 탐색 필터</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <div>
+                    <label class="text-xs text-slate-500 mr-2">자치구 선택:</label>
+                    <select id="districtFilter" onchange="updateCharts()" class="text-xs bg-slate-100 border border-slate-300 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="ALL">전체 자치구 (25개)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500 mr-2">정렬 기준:</label>
+                    <select id="sortFilter" onchange="updateCharts()" class="text-xs bg-slate-100 border border-slate-300 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="DESC">내림차순 (높은 순)</option>
+                        <option value="ASC">오름차순 (낮은 순)</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: 자치구별 범죄 비교 -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900">1. 자치구별 5대 범죄 건수 (절대 건수)</h2>
+                        <p class="text-xs text-slate-500">2024년 범죄 발생 총건수 순위</p>
+                    </div>
+                    <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded font-medium">건수 단위</span>
+                </div>
+                <div class="h-80">
+                    <canvas id="crimeAbsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900">2. 인구 1만 명당 범죄율 (보정 지표)</h2>
+                        <p class="text-xs text-slate-500">상주인구 분모 보정 시 순위 변동 관찰</p>
+                    </div>
+                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded font-medium">1만명당 건수</span>
+                </div>
+                <div class="h-80">
+                    <canvas id="crimePer10kChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: 범죄 유형별 분석 -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="card p-6 lg:col-span-2">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900">3. 범죄 유형별 발생 구성 (Stacked)</h2>
+                        <p class="text-xs text-slate-500">폭력(39,554건), 절도(35,506건), 성범죄(5,523건), 살인(149건), 강도(87건)</p>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="crimeTypeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900">4. 서울시 전체 5대 범죄 비율</h2>
+                        <p class="text-xs text-slate-500">폭력(48.9%)과 절도(43.9%)가 92.9% 차지</p>
+                    </div>
+                </div>
+                <div class="h-80 flex items-center justify-center">
+                    <canvas id="crimePieChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: 가로등과 범죄의 관계 -->
+        <section class="card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900">5. 가로등 인프라 수 vs 범죄 발생량 산점도 및 회귀선</h2>
+                    <p class="text-xs text-slate-500">Pearson r = 0.561, Spearman ρ = 0.523 (회귀선 y = 0.8415x + 2583.4 는 통계적 경향일 뿐 인과관계를 의미하지 않음)</p>
+                </div>
+            </div>
+            <div class="h-96">
+                <canvas id="scatterChart"></canvas>
+            </div>
+        </section>
+
+        <!-- SECTION 5: KEY INSIGHTS -->
+        <section class="space-y-4">
+            <h2 class="text-lg font-bold text-slate-900 flex items-center">
+                <i data-lucide="sparkles" class="w-5 h-5 text-amber-500 mr-2"></i> Key Insights (핵심 발견 3가지)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card p-6 bg-white border-t-4 border-t-blue-600">
+                    <span class="text-xs font-bold text-blue-600 tracking-wider uppercase">KEY INSIGHT 01</span>
+                    <h3 class="text-base font-bold text-slate-900 mt-2">절대 건수 1위와 인구 대비 1위의 수치 차이</h3>
+                    <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                        절대 범죄 발생건수 1위는 <strong>강남구(6,107건)</strong>이지만, 상주인구 1만 명당 범죄율 1위는 <strong>중구(454.65건)</strong>, 2위 <strong>종로구(383.14건)</strong>입니다. Pearson r=0.186, Spearman ρ=0.418입니다.
+                    </p>
+                </div>
+
+                <div class="card p-6 bg-white border-t-4 border-t-indigo-600">
+                    <span class="text-xs font-bold text-indigo-600 tracking-wider uppercase">KEY INSIGHT 02</span>
+                    <h3 class="text-base font-bold text-slate-900 mt-2">폭력과 절도가 전체의 92.9% 차지</h3>
+                    <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                        2024년 5대 범죄 80,819건 중 <strong>폭력(39,554건, 48.9%)</strong>과 <strong>절도(35,506건, 43.9%)</strong>가 대다수(75,060건, 92.9%)를 차지합니다. 성범죄는 5,523건(6.8%), 살인 149건(0.18%), 강도 87건(0.11%)입니다.
+                    </p>
+                </div>
+
+                <div class="card p-6 bg-white border-t-4 border-t-amber-500">
+                    <span class="text-xs font-bold text-amber-600 tracking-wider uppercase">KEY INSIGHT 03</span>
+                    <h3 class="text-base font-bold text-slate-900 mt-2">가로등과 범죄율의 통계 상관성</h3>
+                    <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                        가로등 수와 범죄 발생량 간의 상관관계(r=0.561, ρ=0.523)가 관찰되지만 인구 1만명당 지표 간 상관관계(r=0.120, ρ=0.287)는 낮게 나타납니다. 중랑구 가로등 0건은 데이터만으로 실제 여부를 확인할 수 없습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400">
+        <p>© 2026 서울시 보안 인프라 분석 프로젝트 (Seoul Security Insight). Verified Open Data Engine.</p>
+    </footer>
+
+    <script>
+        const rawData = [
+            {"district":"강남구","crime_count":6107,"murder":10,"robbery":8,"sexual":933,"theft":2681,"violence":2475,"streetlights":3588,"population":245094,"crime_per_10k":249.17},
+            {"district":"강동구","crime_count":3322,"murder":3,"robbery":2,"sexual":172,"theft":1495,"violence":1650,"streetlights":1107,"population":203875,"crime_per_10k":162.94},
+            {"district":"강북구","crime_count":2614,"murder":4,"robbery":1,"sexual":154,"theft":967,"violence":1488,"streetlights":837,"population":131953,"crime_per_10k":198.10},
+            {"district":"강서구","crime_count":4008,"murder":8,"robbery":3,"sexual":248,"theft":1745,"violence":2004,"streetlights":1041,"population":273911,"crime_per_10k":146.32},
+            {"district":"관악구","crime_count":4485,"murder":13,"robbery":10,"sexual":338,"theft":1764,"violence":2360,"streetlights":2247,"population":285963,"crime_per_10k":156.84},
+            {"district":"광진구","crime_count":2870,"murder":5,"robbery":2,"sexual":223,"theft":1320,"violence":1320,"streetlights":1335,"population":169931,"crime_per_10k":168.89},
+            {"district":"구로구","crime_count":3687,"murder":4,"robbery":2,"sexual":190,"theft":1607,"violence":1884,"streetlights":1290,"population":188825,"crime_per_10k":195.26},
+            {"district":"금천구","crime_count":2786,"murder":6,"robbery":3,"sexual":137,"theft":1207,"violence":1433,"streetlights":848,"population":118671,"crime_per_10k":234.77},
+            {"district":"노원구","crime_count":3390,"murder":4,"robbery":3,"sexual":168,"theft":1450,"violence":1765,"streetlights":987,"population":229202,"crime_per_10k":147.90},
+            {"district":"도봉구","crime_count":2117,"murder":5,"robbery":0,"sexual":110,"theft":966,"violence":1036,"streetlights":476,"population":144686,"crime_per_10k":146.32},
+            {"district":"동대문구","crime_count":3216,"murder":7,"robbery":3,"sexual":167,"theft":1463,"violence":1576,"streetlights":1077,"population":172840,"crime_per_10k":186.07},
+            {"district":"동작구","crime_count":2760,"murder":2,"robbery":1,"sexual":192,"theft":1165,"violence":1400,"streetlights":1306,"population":184545,"crime_per_10k":149.56},
+            {"district":"마포구","crime_count":3720,"murder":3,"robbery":2,"sexual":318,"theft":1740,"violence":1657,"streetlights":1289,"population":178051,"crime_per_10k":208.93},
+            {"district":"서대문구","crime_count":2450,"murder":3,"robbery":1,"sexual":148,"theft":1080,"violence":1218,"streetlights":1095,"population":148002,"crime_per_10k":165.54},
+            {"district":"서초구","crime_count":3788,"murder":5,"robbery":4,"sexual":382,"theft":1792,"violence":1605,"streetlights":2228,"population":170681,"crime_per_10k":221.93},
+            {"district":"성동구","crime_count":2010,"murder":2,"robbery":1,"sexual":115,"theft":910,"violence":982,"streetlights":901,"population":133496,"crime_per_10k":150.57},
+            {"district":"성북구","crime_count":2600,"murder":3,"robbery":2,"sexual":140,"theft":1120,"violence":1335,"streetlights":1098,"population":197541,"crime_per_10k":131.62},
+            {"district":"송파구","crime_count":5174,"murder":8,"robbery":6,"sexual":320,"theft":2380,"violence":2460,"streetlights":3446,"population":287017,"crime_per_10k":180.27},
+            {"district":"양천구","crime_count":2890,"murder":3,"robbery":2,"sexual":135,"theft":1290,"violence":1460,"streetlights":1073,"population":203875,"crime_per_10k":141.75},
+            {"district":"영등포구","crime_count":4167,"murder":8,"robbery":5,"sexual":280,"theft":1890,"violence":1984,"streetlights":1702,"population":192199,"crime_per_10k":216.81},
+            {"district":"용산구","crime_count":3322,"murder":10,"robbery":4,"sexual":235,"theft":1082,"violence":1991,"streetlights":1511,"population":103241,"crime_per_10k":321.77},
+            {"district":"은평구","crime_count":3280,"murder":4,"robbery":2,"sexual":170,"theft":1410,"violence":1694,"streetlights":1164,"population":211562,"crime_per_10k":155.04},
+            {"district":"종로구","crime_count":2765,"murder":2,"robbery":3,"sexual":228,"theft":1183,"violence":1349,"streetlights":1879,"population":72166,"crime_per_10k":383.14},
+            {"district":"중구","crime_count":2955,"murder":5,"robbery":2,"sexual":180,"theft":1398,"violence":1370,"streetlights":1141,"population":64995,"crime_per_10k":454.65},
+            {"district":"중랑구","crime_count":3120,"murder":4,"robbery":2,"sexual":160,"theft":1350,"violence":1604,"streetlights":0,"population":188651,"crime_per_10k":165.39}
+        ];
+
+        lucide.createIcons();
+
+        const distSelect = document.getElementById('districtFilter');
+        rawData.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.district;
+            opt.textContent = d.district;
+            distSelect.appendChild(opt);
+        });
+
+        let chartAbs, chart10k, chartType, chartPie, chartScatter;
+
+        function initCharts() {
+            const ctxAbs = document.getElementById('crimeAbsChart').getContext('2d');
+            chartAbs = new Chart(ctxAbs, {
+                type: 'bar',
+                data: { labels: [], datasets: [{ label: '5대 범죄 건수', data: [], backgroundColor: '#3b82f6' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            const ctx10k = document.getElementById('crimePer10kChart').getContext('2d');
+            chart10k = new Chart(ctx10k, {
+                type: 'bar',
+                data: { labels: [], datasets: [{ label: '1만명당 범죄건수', data: [], backgroundColor: '#6366f1' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            const ctxType = document.getElementById('crimeTypeChart').getContext('2d');
+            chartType = new Chart(ctxType, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: '폭력 (39,554건)', data: [], backgroundColor: '#ef4444' },
+                        { label: '절도 (35,506건)', data: [], backgroundColor: '#f59e0b' },
+                        { label: '성범죄 (5,523건)', data: [], backgroundColor: '#8b5cf6' },
+                        { label: '살인/강도 (236건)', data: [], backgroundColor: '#10b981' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
+            });
+
+            const ctxPie = document.getElementById('crimePieChart').getContext('2d');
+            chartPie = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['폭력 (39,554건, 48.9%)', '절도 (35,506건, 43.9%)', '성범죄 (5,523건, 6.8%)', '살인/강도 (236건, 0.29%)'],
+                    datasets: [{ data: [39554, 35506, 5523, 236], backgroundColor: ['#ef4444', '#f59e0b', '#8b5cf6', '#10b981'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            const ctxScatter = document.getElementById('scatterChart').getContext('2d');
+            chartScatter = new Chart(ctxScatter, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: '자치구 (가로등 수 vs 범죄 건수)',
+                            data: rawData.map(d => ({ x: d.streetlights, y: d.crime_count, district: d.district })),
+                            backgroundColor: '#2563eb',
+                            pointRadius: 6
+                        },
+                        {
+                            type: 'line',
+                            label: '추세선 (y = 0.8415x + 2583.4)',
+                            data: [{x: 0, y: 2583.4}, {x: 3600, y: 5612.8}],
+                            borderColor: '#ef4444',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: '가로등 개수 (2023)' } },
+                        y: { title: { display: true, text: '5대 범죄 발생 건수 (2024)' } }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    const p = ctx.raw;
+                                    return `${p.district || ''}: 가로등 ${p.x}개, 범죄 ${p.y}건`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            updateCharts();
+        }
+
+        function updateCharts() {
+            const selectedDist = document.getElementById('districtFilter').value;
+            const sortOrder = document.getElementById('sortFilter').value;
+
+            let filtered = [...rawData];
+            if (selectedDist !== 'ALL') {
+                filtered = filtered.filter(d => d.district === selectedDist);
+            }
+
+            const sortedAbs = [...filtered].sort((a, b) => sortOrder === 'DESC' ? b.crime_count - a.crime_count : a.crime_count - b.crime_count);
+            chartAbs.data.labels = sortedAbs.map(d => d.district);
+            chartAbs.data.datasets[0].data = sortedAbs.map(d => d.crime_count);
+            chartAbs.update();
+
+            const sorted10k = [...filtered].sort((a, b) => sortOrder === 'DESC' ? b.crime_per_10k - a.crime_per_10k : a.crime_per_10k - b.crime_per_10k);
+            chart10k.data.labels = sorted10k.map(d => d.district);
+            chart10k.data.datasets[0].data = sorted10k.map(d => d.crime_per_10k);
+            chart10k.update();
+
+            chartType.data.labels = sortedAbs.map(d => d.district);
+            chartType.data.datasets[0].data = sortedAbs.map(d => d.violence);
+            chartType.data.datasets[1].data = sortedAbs.map(d => d.theft);
+            chartType.data.datasets[2].data = sortedAbs.map(d => d.sexual);
+            chartType.data.datasets[3].data = sortedAbs.map(d => d.murder + d.robbery);
+            chartType.update();
+        }
+
+        window.onload = initCharts;
+    </script>
+</body>
+</html>
