@@ -1,0 +1,16 @@
+# theme_dark.toml
+
+# 다크 테마
+# 서울 쉴더스 - 다크 버전
+
+[server]
+enableStaticServing = true
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+primaryColor = "#66BB6A"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#1A2020"
+textColor = "#E8F5E9"

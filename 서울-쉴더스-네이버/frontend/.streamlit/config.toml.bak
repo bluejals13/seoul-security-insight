@@ -1,0 +1,16 @@
+# theme_white.toml
+
+# 화이트(라이트) 테마
+# 서울 쉴더스 - 기본 테마
+
+[server]
+enableStaticServing = true
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+primaryColor = "#2E7D32"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F7F5"
+textColor = "#1B1B1B"
