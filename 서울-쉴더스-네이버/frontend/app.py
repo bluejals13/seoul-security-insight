@@ -46,13 +46,12 @@ from data_access import (
 from naver_map import write_route_map, write_static_map
 from route_finder import fetch_route, find_nearest_facility, get_current_location, get_tmap_app_key
 
-# override=True: load_dotenv는 기본적으로 os.environ에 이미 들어있는 값은 안 덮어쓴다.
-# 이 줄 자체는 리런마다 다시 실행되지만(app.py 최상단이라), override 없이는 "맨 처음 리런 때
-# 읽은 값"이 프로세스 안에 계속 남아있어서 .env를 나중에 고쳐도 서버를 완전히 재시작하기
-# 전까진 반영이 안 된다 - route_finder.get_tmap_app_key()에서 실제로 겪었던 것과 같은 종류의
-# 문제라 여기도 미리 막아둔다.
+# Streamlit Cloud: st.secrets 우선, 로컬: .env 폴백.
+# load_dotenv(override=True)로 .env를 먼저 읽어 os.environ에 넣고,
+# st.secrets에 같은 키가 있으면 그 값으로 덮어쓴다 - 배포 환경에서는
+# st.secrets가 항상 이기고, 로컬(.env만 있을 때)은 기존처럼 동작한다.
 load_dotenv(BASE_DIR / ".env", override=True)
-NAVER_MAPS_CLIENT_ID = os.getenv("NAVER_MAPS_CLIENT_ID")
+NAVER_MAPS_CLIENT_ID = st.secrets.get("NAVER_MAPS_CLIENT_ID") or os.getenv("NAVER_MAPS_CLIENT_ID")
 
 ROUTE_MODES = {"도보": "pedestrian", "자동차": "car"}
 
@@ -157,13 +156,14 @@ HOME_FEATURE_CARDS = [
 
 def _warn_missing_env(var_name: str) -> None:
     """
-    API 키 등 .env 설정이 빠졌을 때 공통 문구로 경고한다.
+    API 키 등 설정이 빠졌을 때 공통 문구로 경고한다.
     "설정을 안 해서 그런 것"과 "시도했는데 실패한 것"을 구분하려고, 이건 st.warning(주의)만 쓰고
     실제 호출 실패는 st.error(route_finder.fetch_route)로 분리해뒀다.
     """
     st.warning(
-        f"{var_name}가 설정되지 않았습니다. "
-        f"프로젝트 루트의 .env 파일에 `{var_name}=발급받은값`를 추가하세요."
+        f"**{var_name}**가 설정되지 않았습니다.  \n"
+        f"- **Streamlit Cloud**: 앱 설정 → Secrets에 `{var_name} = \"값\"` 형식으로 추가하세요.  \n"
+        f"- **로컬**: 프로젝트 루트의 `.env` 파일에 `{var_name}=발급받은값`를 추가하세요."
     )
 
 

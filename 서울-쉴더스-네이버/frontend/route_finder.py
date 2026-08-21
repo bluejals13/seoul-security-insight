@@ -28,22 +28,15 @@ TMAP_CAR_URL = "https://apis.openapi.sk.com/tmap/routes?version=1"
 
 def get_tmap_app_key() -> Optional[str]:
     """
-    .env를 매번 다시 읽어서 TMAP_APP_KEY를 가져온다 - 모듈 최상단에서 딱 한 번만 os.getenv()로
-    읽어서 상수로 박아두면 안 되는 이유가 있다.
+    Streamlit Cloud: st.secrets 우선, 로컬: .env 폴백으로 TMAP_APP_KEY를 가져온다.
 
-    이 모듈(route_finder.py)은 Streamlit 서버 프로세스가 켜져 있는 동안 딱 한 번만 import되고,
-    그 이후 리런에서는 이미 import된 모듈을 재사용할 뿐 최상단 코드를 다시 실행하지 않는다
-    (app.py는 매 리런마다 통째로 다시 실행되지만 - 그래서 화면이 매번 새로 그려짐 - import된
-    모듈은 파이썬이 캐싱해서 재사용할 뿐 다시 실행하지 않는다는 게 기본 동작이다). 그래서 상수로
-    한 번만 읽어두면, 서버를 처음 켰을 때 .env에 키가 없었거나 잘못돼 있었을 경우 나중에 .env를
-    고쳐도 서버를 완전히 재시작(Ctrl+C 후 다시 실행)하기 전까지는 예전 값(None 등)이 계속
-    쓰인다 - "방금 고쳤는데 왜 계속 401/키 누락이 나지" 하는 혼란의 직접적인 원인이 된다.
-
-    호출될 때마다 .env를 다시 읽고, override=True로 이미 프로세스에 들어있는 값도 최신 파일
-    내용으로 덮어써서, 서버를 다시 켜지 않고 .env만 고쳐도 바로 반영되게 한다.
+    모듈이 import된 뒤에도 .env를 매번 다시 읽어서, 서버를 완전히 재시작하지 않고
+    .env만 고쳐도 바로 반영되게 한다(모듈은 한 번만 import되고 최상단 코드는 재실행되지
+    않기 때문 - 자세한 설명은 이전 docstring 참고).
+    배포 환경(Streamlit Cloud)에서는 st.secrets가 항상 우선한다.
     """
     load_dotenv(ENV_PATH, override=True)
-    return os.getenv("TMAP_APP_KEY")
+    return st.secrets.get("TMAP_APP_KEY") or os.getenv("TMAP_APP_KEY")
 
 
 def haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
