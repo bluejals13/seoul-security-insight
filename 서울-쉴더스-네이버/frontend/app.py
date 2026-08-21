@@ -51,7 +51,15 @@ from route_finder import fetch_route, find_nearest_facility, get_current_locatio
 # st.secrets에 같은 키가 있으면 그 값으로 덮어쓴다 - 배포 환경에서는
 # st.secrets가 항상 이기고, 로컬(.env만 있을 때)은 기존처럼 동작한다.
 load_dotenv(BASE_DIR / ".env", override=True)
-NAVER_MAPS_CLIENT_ID = st.secrets.get("NAVER_MAPS_CLIENT_ID") or os.getenv("NAVER_MAPS_CLIENT_ID")
+
+# NAVER API 부분 수정-2026-08-21_18:11_황인찬
+try:
+    NAVER_MAPS_CLIENT_ID = st.secrets.get("NAVER_MAPS_CLIENT_ID")
+except Exception:
+    NAVER_MAPS_CLIENT_ID = None
+NAVER_MAPS_CLIENT_ID = (NAVER_MAPS_CLIENT_ID or os.getenv("NAVER_MAPS_CLIENT_ID"))
+
+
 
 ROUTE_MODES = {"도보": "pedestrian", "자동차": "car"}
 

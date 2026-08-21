@@ -25,18 +25,18 @@ ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 TMAP_PEDESTRIAN_URL = "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1"
 TMAP_CAR_URL = "https://apis.openapi.sk.com/tmap/routes?version=1"
 
-
+# TMAP 부분 수정 -2026-08-21_18:10_황인찬
 def get_tmap_app_key() -> Optional[str]:
-    """
-    Streamlit Cloud: st.secrets 우선, 로컬: .env 폴백으로 TMAP_APP_KEY를 가져온다.
-
-    모듈이 import된 뒤에도 .env를 매번 다시 읽어서, 서버를 완전히 재시작하지 않고
-    .env만 고쳐도 바로 반영되게 한다(모듈은 한 번만 import되고 최상단 코드는 재실행되지
-    않기 때문 - 자세한 설명은 이전 docstring 참고).
-    배포 환경(Streamlit Cloud)에서는 st.secrets가 항상 우선한다.
-    """
     load_dotenv(ENV_PATH, override=True)
-    return st.secrets.get("TMAP_APP_KEY") or os.getenv("TMAP_APP_KEY")
+
+    try:
+        value = st.secrets.get("TMAP_APP_KEY")
+    except Exception:
+        value = None
+
+    return value or os.getenv("TMAP_APP_KEY")
+
+
 
 
 def haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
